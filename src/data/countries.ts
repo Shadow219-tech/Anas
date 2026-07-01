@@ -80,17 +80,16 @@ export const COUNTRIES: Country[] = [
 ];
 
 // Morocco images
-import maTshirt from '../assets/images/morocco/t-shirt/image.png';
-import maShort from '../assets/images/morocco/short/image copy.png';
-import maEnsemble from '../assets/images/morocco/ensemble/image copy copy copy copy copy.png';
-import maEnsemble2 from '../assets/images/morocco/ensemble/image.png';
+import maTshirt from '../assets/images/morocco/t-shirt/image copy copy.png';
+import maShort from '../assets/images/morocco/short/image copy copy copy.png';
+import maEnsemble from '../assets/images/morocco/ensemble/image copy copy copy copy copy copy.png';
 import maWinter from '../assets/images/morocco/winter/image.png';
 import maWinter2 from '../assets/images/morocco/winter/image copy.png';
 
 // USA images
-import usTshirt from '../assets/images/t-shirt/USA/image.png';
+import usTshirt from '../assets/images/t-shirt/USA/image copy.png';
 import usShort from '../assets/images/short/image copy.png';
-import usEnsemble from '../assets/images/t-shirt/ensemble/image.png';
+import usEnsemble from '../assets/images/usa/ensemble/image.png';
 import usaHero from '../assets/images/usa/image.png';
 
 export const USA_HERO = usaHero;
@@ -100,7 +99,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'ma-tshirt', type: 'tshirt', name: 'T-shirt Maroc', price: 50,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [maTshirt, maEnsemble, maShort],
+      images: [maTshirt],
       availability: 'available',
       season: 'ete',
       description: 'T-shirt oversize en coton 280g. Motif zellige brodé à la main, étoile Orygin au dos. Coupe unisexe.',
@@ -108,7 +107,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'ma-short', type: 'short', name: 'Short Maroc', price: 50,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [maShort, maTshirt, maEnsemble],
+      images: [maShort],
       availability: 'available',
       season: 'ete',
       description: 'Short cargo multi-poches en toile de coton. Détails brodés inspirés des motifs marocains. Coupe large.',
@@ -116,7 +115,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'ma-ensemble-ete', type: 'ensemble-ete', name: 'Ensemble Été Maroc', price: 90,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [maEnsemble, maTshirt, maShort, maEnsemble2],
+      images: [maEnsemble],
       availability: 'available',
       season: 'ete',
       description: 'Le duo signature Orygin Maroc — T-shirt + Short assortis. Économie groupée. Édition limitée Drop 001.',
@@ -153,7 +152,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'us-tshirt', type: 'tshirt', name: 'T-shirt USA', price: 50,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [usTshirt, usEnsemble],
+      images: [usTshirt],
       availability: 'available',
       season: 'ete',
       description: 'T-shirt oversize en coton 280g. Eagle brodé NYC au dos, étoile Orygin sur la poitrine. Coupe unisexe.',
@@ -161,7 +160,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'us-short', type: 'short', name: 'Short USA', price: 50,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [usShort, usTshirt, usEnsemble],
+      images: [usShort],
       availability: 'available',
       season: 'ete',
       description: 'Short cargo denim multi-poches. Bretelles, broderies americana, patch Orygin. Coupe large.',
@@ -169,7 +168,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'us-ensemble-ete', type: 'ensemble-ete', name: 'Ensemble Été USA', price: 90,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [usEnsemble, usTshirt, usShort],
+      images: [usEnsemble],
       availability: 'available',
       season: 'ete',
       description: 'T-shirt + Short USA Drop 001. La paire parfaite. Édition limitée, pièces numérotées.',

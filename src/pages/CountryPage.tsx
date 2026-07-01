@@ -277,9 +277,7 @@ function ProductCard({
 
         {/* Quick view hint */}
         {!isUnavailable && (
-          <div className={`absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 ${
-            hovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-          }`}>
+          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
             <span className="text-[8px] tracking-[4px] text-white bg-black-1/80 backdrop-blur-sm px-4 py-2 border border-black-3">
               VOIR LE PRODUIT
             </span>
