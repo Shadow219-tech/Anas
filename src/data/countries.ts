@@ -87,9 +87,10 @@ import maWinter from '../assets/images/morocco/winter/image.png';
 import maWinter2 from '../assets/images/morocco/winter/image copy.png';
 
 // USA images
-import usTshirt from '../assets/images/t-shirt/USA/image copy.png';
-import usShort from '../assets/images/short/image copy.png';
-import usEnsemble from '../assets/images/usa/ensemble/image.png';
+import usTshirt from '../assets/images/t-shirt/USA/image copy copy copy.png';
+import usShort from '../assets/images/short/USA/image.png';
+import usEnsemble from '../assets/images/usa/ensemble/image copy.png';
+
 import usaHero from '../assets/images/usa/image.png';
 
 export const USA_HERO = usaHero;
