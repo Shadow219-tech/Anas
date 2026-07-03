@@ -80,9 +80,9 @@ export const COUNTRIES: Country[] = [
 ];
 
 // Morocco images
-import maTshirt from '../assets/images/morocco/t-shirt/image copy copy copy copy.png';
-import maShort from '../assets/images/morocco/short/image copy copy copy copy copy.png';
-import maEnsemble from '../assets/images/morocco/ensemble/image copy copy copy copy copy copy copy.png';
+import maTshirt from '../assets/images/morocco/t-shirt/image copy.png';
+import maShort from '../assets/images/morocco/short/image copy copy copy.png';
+import maEnsemble from '../assets/images/morocco/ensemble/image copy copy.png';
 import maWinter from '../assets/images/morocco/winter/image.png';
 import maWinter2 from '../assets/images/morocco/winter/image copy.png';
 
