@@ -80,9 +80,10 @@ export const COUNTRIES: Country[] = [
 ];
 
 // Morocco images
-import maTshirt from '../assets/images/morocco/t-shirt/image copy copy.png';
-import maShort from '../assets/images/morocco/short/image copy copy copy.png';
-import maEnsemble from '../assets/images/morocco/ensemble/image copy copy copy copy copy copy.png';
+import maTshirt from '../assets/images/morocco/t-shirt/image copy.png';
+import maShortFront from '../assets/images/morocco/short/image copy copy copy.png';
+import maShortBack from '../assets/images/morocco/short/image.png';
+import maEnsemble from '../assets/images/morocco/ensemble/image copy copy.png';
 import maWinter from '../assets/images/morocco/winter/image.png';
 import maWinter2 from '../assets/images/morocco/winter/image copy.png';
 
@@ -108,7 +109,7 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     {
       id: 'ma-short', type: 'short', name: 'Short Maroc', price: 50,
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      images: [maShort],
+      images: [maShortFront, maShortBack],
       availability: 'available',
       season: 'ete',
       description: 'Short cargo multi-poches en toile de coton. Détails brodés inspirés des motifs marocains. Coupe large.',
