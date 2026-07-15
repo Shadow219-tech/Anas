@@ -85,6 +85,81 @@
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
 
+/* ── 3D Star Animation ──────────────────────────────────────────── */
+@keyframes star3d-spin {
+  0%   { transform: rotateY(0deg)   rotateX(8deg); }
+  50%  { transform: rotateY(180deg) rotateX(-6deg); }
+  100% { transform: rotateY(360deg) rotateX(8deg); }
+}
+
+@keyframes star3d-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.25)) drop-shadow(0 0 24px rgba(201,168,76,0.1)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(201,168,76,0.55)) drop-shadow(0 0 60px rgba(201,168,76,0.25)); }
+}
+
+@keyframes star3d-layer-bob {
+  0%, 100% { transform: translateZ(var(--z, 0px)); }
+  50%      { transform: translateZ(calc(var(--z, 0px) + 4px)); }
+}
+
+@keyframes star3d-orbit {
+  from { transform: rotate(0deg)   translateX(var(--orbit-r, 80px)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-r, 80px)) rotate(-360deg); }
+}
+
+@keyframes star3d-ring-pulse {
+  0%, 100% { opacity: 0.15; transform: rotate(0deg)   scale(1); }
+  50%      { opacity: 0.35; transform: rotate(180deg) scale(1.05); }
+}
+
+@keyframes star3d-ambient {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);    opacity: 0.4; }
+  50%      { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
+}
+
+.star3d-scene {
+  perspective: 800px;
+}
+
+.star3d-inner {
+  transform-style: preserve-3d;
+  animation: star3d-spin 12s linear infinite, star3d-glow 4s ease-in-out infinite;
+}
+
+.star3d-layer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: star3d-layer-bob 3s ease-in-out infinite;
+}
+
+.star3d-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: star3d-ring-pulse 6s ease-in-out infinite;
+}
+
+.star3d-orbit-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  animation: star3d-orbit var(--orbit-d, 8s) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+}
+
+.star3d-ambient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  animation: star3d-ambient 5s ease-in-out infinite;
+}
+
 /* Stars background */
 .stars-bg {
   background-image: 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { COUNTRIES, CONTINENTS } from '../data/countries';
 import OryginStar from '../components/OryginStar';
+import Star3D from '../components/Star3D';
 import Ticker from '../components/Ticker';
 import Countdown from '../components/Countdown';
 
@@ -54,9 +55,9 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Star */}
-          <div className="opacity-0 animate-starburst-in animate-delay-200 mb-6">
-            <OryginStar size={80} animated />
+          {/* 3D Star */}
+          <div className="opacity-0 animate-fade-in-up animate-delay-200 mb-6">
+            <Star3D size={140} />
           </div>
 
           {/* Title */}
