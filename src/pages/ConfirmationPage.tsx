@@ -4,6 +4,7 @@ import { Package } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
+import Scene3D from '../components/Scene3D';
 
 interface Order {
   id: string;
@@ -49,7 +50,7 @@ export default function ConfirmationPage() {
 
   return (
     <div
-      className="min-h-screen pt-16 relative"
+      className="min-h-screen pt-16 relative page3d-in"
       style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 50%)' }}
     >
       {/* Top glow */}

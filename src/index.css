@@ -173,7 +173,196 @@
     radial-gradient(1.5px 1.5px at 10% 55%, rgba(201,168,76,0.1) 0%, transparent 100%);
 }
 
-/* Scrollbar */
+/* ── 3D Tilt Card ──────────────────────────────────────────────── */
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.tilt-3d-inner {
+  transform-style: preserve-3d;
+}
+
+.tilt-3d-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  mix-blend-mode: overlay;
+}
+
+.tilt-3d-glare.active {
+  opacity: 1;
+}
+
+/* ── 3D Reveal (scroll-triggered) ──────────────────────────────── */
+@keyframes reveal3d {
+  from {
+    opacity: 0;
+    transform: perspective(800px) rotateX(15deg) translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(800px) rotateX(0deg) translateY(0) scale(1);
+  }
+}
+
+.reveal3d {
+  opacity: 0;
+}
+
+.reveal3d.revealed {
+  animation: reveal3d 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── 3D Floating Scene ─────────────────────────────────────────── */
+@keyframes float3d-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateY(0deg); }
+  33%      { transform: translate3d(30px, -40px, 50px) rotateY(120deg); }
+  66%      { transform: translate3d(-20px, 20px, 100px) rotateY(240deg); }
+}
+
+@keyframes float3d-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateZ(0deg); }
+  50%      { transform: translate3d(-40px, 30px, 60px) rotateX(180deg) rotateZ(90deg); }
+}
+
+@keyframes float3d-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateZ(0deg); }
+  25%      { transform: translate3d(25px, 25px, 40px) rotateZ(90deg); }
+  50%      { transform: translate3d(0, 50px, 80px) rotateZ(180deg); }
+  75%      { transform: translate3d(-25px, 25px, 40px) rotateZ(270deg); }
+}
+
+@keyframes drift3d {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(var(--dx, 20px), var(--dy, -30px), var(--dz, 50px)); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes twinkle3d {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%      { opacity: 0.8; transform: scale(1); }
+}
+
+.scene3d-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── 3D Page Transitions ───────────────────────────────────────── */
+@keyframes page3d-in {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) translateZ(-80px) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1200px) translateZ(0) translateY(0);
+  }
+}
+
+.page3d-in {
+  animation: page3d-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── 3D Flip Card ──────────────────────────────────────────────── */
+@keyframes flip3d-y {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+.flip3d {
+  transform-style: preserve-3d;
+  animation: flip3d-y 8s linear infinite;
+}
+
+/* ── 3D Hover Lift ─────────────────────────────────────────────── */
+.lift3d {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.lift3d:hover {
+  transform: perspective(600px) translateZ(20px) rotateX(2deg);
+  box-shadow: 0 20px 60px rgba(201,168,76,0.12), 0 0 1px rgba(201,168,76,0.2);
+}
+
+/* ── 3D Parallax layer helper ──────────────────────────────────── */
+.parallax3d {
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+/* ── 3D Glow Pulse for buttons ─────────────────────────────────── */
+@keyframes glow-pulse-3d {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(201,168,76,0.15), 0 0 40px rgba(201,168,76,0.05);
+    transform: translateZ(0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(201,168,76,0.3), 0 0 60px rgba(201,168,76,0.1);
+    transform: translateZ(8px);
+  }
+}
+
+.glow-pulse-3d {
+  animation: glow-pulse-3d 3s ease-in-out infinite;
+}
+
+/* ── 3D Modal Entrance ─────────────────────────────────────────── */
+@keyframes modal3d-in {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(-10deg) translateY(60px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+  }
+}
+
+@keyframes modal3d-out {
+  from {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(10deg) translateY(40px) scale(0.95);
+  }
+}
+
+.modal3d-in {
+  animation: modal3d-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── 3D Drawer Slide ───────────────────────────────────────────── */
+@keyframes drawer3d-in {
+  from { transform: perspective(800px) translateX(100%) rotateY(15deg); }
+  to   { transform: perspective(800px) translateX(0) rotateY(0deg); }
+}
+
+.drawer3d-in {
+  animation: drawer3d-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: right center;
+}
+
+/* ── 3D Drop shadow for cards ──────────────────────────────────── */
+.shadow3d {
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.5),
+    0 2px 4px rgba(0,0,0,0.3),
+    0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #080808; }
 ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }

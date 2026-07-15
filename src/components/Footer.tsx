@@ -7,8 +7,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <OryginStar size={24} />
+            <div className="flex items-center gap-3 mb-4 group">
+              <div className="transition-transform duration-700 group-hover:rotate-[360deg]">
+                <OryginStar size={24} />
+              </div>
               <span className="font-cormorant italic text-2xl text-gold-gradient">Orygin</span>
             </div>
             <p className="text-[10px] tracking-[4px] text-gray-1 mb-4">GLOBAL STREET CULTURE</p>

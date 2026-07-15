@@ -3,6 +3,9 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { CONTINENTS, COUNTRIES } from '../data/countries';
 import OryginStar from '../components/OryginStar';
 import Countdown from '../components/Countdown';
+import Scene3D from '../components/Scene3D';
+import TiltCard3D from '../components/TiltCard3D';
+import Reveal3D from '../components/Reveal3D';
 
 const DROP_DATES: Record<string, Date> = {
   europe: new Date('2026-09-15T00:00:00'),
@@ -30,8 +33,9 @@ export default function ContinentPage() {
 
   if (isSoon) {
     return (
-      <div className="min-h-screen bg-black-1 pt-16">
-        <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-8">
+      <div className="min-h-screen bg-black-1 pt-16 page3d-in">
+        <Scene3D count={40} className="opacity-60" />
+        <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-8 relative z-10">
           <div className="animate-float mb-8">
             <OryginStar size={100} animated />
           </div>
@@ -58,11 +62,13 @@ export default function ContinentPage() {
             <div className="mb-16 max-w-2xl">
               <p className="text-[9px] tracking-[4px] text-gray-1 mb-6">PAYS À VENIR</p>
               <div className="flex flex-wrap gap-3 justify-center">
-                {countries.map(c => (
-                  <span key={c.code} className="flex items-center gap-2 border border-black-3 px-4 py-2">
-                    <span>{c.flag}</span>
-                    <span className="font-cormorant italic text-sm text-gray-3">{c.name}</span>
-                  </span>
+                {countries.map((c, i) => (
+                  <Reveal3D key={c.code} delay={i * 0.06} rotateX={12} translateY={20}>
+                    <span className="flex items-center gap-2 border border-black-3 px-4 py-2 lift3d">
+                      <span>{c.flag}</span>
+                      <span className="font-cormorant italic text-sm text-gray-3">{c.name}</span>
+                    </span>
+                  </Reveal3D>
                 ))}
               </div>
             </div>
@@ -98,9 +104,10 @@ export default function ContinentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black-1 pt-16">
+    <div className="min-h-screen bg-black-1 pt-16 page3d-in">
       {/* Header */}
       <div className="py-20 px-8 text-center border-b border-black-3 relative overflow-hidden">
+        <Scene3D count={25} className="opacity-50" />
         <div className="absolute top-8 left-1/2 -translate-x-1/2 opacity-5">
           <OryginStar size={300} />
         </div>
@@ -121,38 +128,40 @@ export default function ContinentPage() {
         {/* Available */}
         {available.length > 0 && (
           <div className="mb-16">
-            <div className="flex items-center gap-4 mb-8">
-              <OryginStar size={14} />
-              <span className="text-[9px] tracking-[5px] text-gold">DISPONIBLE</span>
-            </div>
+            <Reveal3D>
+              <div className="flex items-center gap-4 mb-8">
+                <OryginStar size={14} />
+                <span className="text-[9px] tracking-[5px] text-gold">DISPONIBLE</span>
+              </div>
+            </Reveal3D>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {available.map(country => (
-                <Link
-                  key={country.code}
-                  to={`/pays/${country.code.toLowerCase()}`}
-                  className="group relative border border-black-3 hover:border-gold-dark transition-all duration-300 overflow-hidden"
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
-                        <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">
-                          {country.name}
+              {available.map((country, i) => (
+                <Reveal3D key={country.code} delay={i * 0.1} rotateX={18} translateY={50}>
+                  <Link to={`/pays/${country.code.toLowerCase()}`} className="block">
+                    <TiltCard3D intensity={12} className="group relative border border-black-3 hover:border-gold-dark transition-colors duration-300 overflow-hidden h-full">
+                      <div className="p-6" style={{ transform: 'translateZ(20px)' }}>
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
+                            <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">
+                              {country.name}
+                            </div>
+                            <div className="text-[9px] tracking-[1px] text-gray-1 italic mt-1">
+                              {country.subtitle}
+                            </div>
+                          </div>
+                          <span className="text-2xl" style={{ transform: 'translateZ(30px)' }}>{country.flag}</span>
                         </div>
-                        <div className="text-[9px] tracking-[1px] text-gray-1 italic mt-1">
-                          {country.subtitle}
+                        <div className="flex items-center justify-between pt-4 border-t border-black-3">
+                          <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
+                          <span className="text-[8px] tracking-[3px] text-gray-1 group-hover:text-gold transition-colors">
+                            VOIR →
+                          </span>
                         </div>
                       </div>
-                      <span className="text-2xl">{country.flag}</span>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t border-black-3">
-                      <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
-                      <span className="text-[8px] tracking-[3px] text-gray-1 group-hover:text-gold transition-colors">
-                        VOIR →
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+                    </TiltCard3D>
+                  </Link>
+                </Reveal3D>
               ))}
             </div>
           </div>
@@ -161,23 +170,24 @@ export default function ContinentPage() {
         {/* Coming soon */}
         {coming.length > 0 && (
           <div>
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-1 h-1 bg-gray-2 rotate-45" />
-              <span className="text-[9px] tracking-[5px] text-gray-2">BIENTÔT</span>
-            </div>
+            <Reveal3D>
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-1 h-1 bg-gray-2 rotate-45" />
+                <span className="text-[9px] tracking-[5px] text-gray-2">BIENTÔT</span>
+              </div>
+            </Reveal3D>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {coming.map(country => (
-                <div
-                  key={country.code}
-                  className="border border-black-3/50 p-5 opacity-60"
-                >
-                  <div className="text-[10px] tracking-[3px] text-gray-2 mb-1">{country.code}</div>
-                  <div className="font-cormorant italic text-xl text-gray-3 mb-1">{country.name}</div>
-                  <div className="text-[8px] tracking-[1px] text-gray-2 italic mb-3">
-                    {country.subtitle}
+              {coming.map((country, i) => (
+                <Reveal3D key={country.code} delay={i * 0.05} rotateX={10} translateY={30}>
+                  <div className="border border-black-3/50 p-5 opacity-60 lift3d">
+                    <div className="text-[10px] tracking-[3px] text-gray-2 mb-1">{country.code}</div>
+                    <div className="font-cormorant italic text-xl text-gray-3 mb-1">{country.name}</div>
+                    <div className="text-[8px] tracking-[1px] text-gray-2 italic mb-3">
+                      {country.subtitle}
+                    </div>
+                    <span className="text-[8px] tracking-[3px] text-gray-2">— BIENTÔT</span>
                   </div>
-                  <span className="text-[8px] tracking-[3px] text-gray-2">— BIENTÔT</span>
-                </div>
+                </Reveal3D>
               ))}
             </div>
           </div>

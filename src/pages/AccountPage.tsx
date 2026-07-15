@@ -4,6 +4,8 @@ import { LogOut, Package, User, MapPin, ChevronRight, Edit3, Check } from 'lucid
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import OryginStar from '../components/OryginStar';
+import Scene3D from '../components/Scene3D';
+import Reveal3D from '../components/Reveal3D';
 
 interface Order {
   id: string;
@@ -90,7 +92,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black-1 pt-16" style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 60%)' }}>
+    <div className="min-h-screen bg-black-1 pt-16 page3d-in" style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 60%)' }}>
       {/* Top glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[400px] h-[250px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(201,168,76,0.04) 0%, transparent 70%)' }} />

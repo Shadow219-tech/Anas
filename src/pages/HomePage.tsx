@@ -5,6 +5,9 @@ import OryginStar from '../components/OryginStar';
 import Star3D from '../components/Star3D';
 import Ticker from '../components/Ticker';
 import Countdown from '../components/Countdown';
+import Scene3D from '../components/Scene3D';
+import TiltCard3D from '../components/TiltCard3D';
+import Reveal3D from '../components/Reveal3D';
 
 const DROP_TARGET = new Date('2026-09-15T00:00:00');
 
@@ -32,6 +35,8 @@ export default function HomePage() {
     <div className="min-h-screen bg-black-1">
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center stars-bg overflow-hidden">
+        {/* 3D particle field */}
+        <Scene3D count={50} />
         {/* Radial glow */}
         <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-radial from-gold/5 to-transparent pointer-events-none" />
@@ -154,103 +159,113 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {AVAILABLE_COUNTRIES.map((country, i) => (
-            <Link
-              key={country.code}
-              to={`/pays/${country.code.toLowerCase()}`}
-              className="relative group overflow-hidden aspect-[3/4] block"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              {country.heroImage && (
-                <img
-                  src={country.heroImage}
-                  alt={country.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/40 to-transparent" />
-              <div className="absolute inset-0 bg-black-1/20 group-hover:bg-black-1/10 transition-colors duration-300" />
+            <Reveal3D key={country.code} delay={i * 0.12} rotateX={20} translateY={60}>
+              <Link to={`/pays/${country.code.toLowerCase()}`} className="block">
+                <TiltCard3D intensity={14} className="relative group overflow-hidden aspect-[3/4] block shadow3d">
+                  {country.heroImage && (
+                    <img
+                      src={country.heroImage}
+                      alt={country.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      style={{ transform: 'translateZ(0)' }}
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/40 to-transparent" />
+                  <div className="absolute inset-0 bg-black-1/20 group-hover:bg-black-1/10 transition-colors duration-300" />
 
-              <div className="absolute top-4 left-4">
-                <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-2 py-1">
-                  ✦ DISPONIBLE
-                </span>
-              </div>
+                  <div className="absolute top-4 left-4" style={{ transform: 'translateZ(30px)' }}>
+                    <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-2 py-1 bg-black-1/60 backdrop-blur-sm">
+                      ✦ DISPONIBLE
+                    </span>
+                  </div>
 
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="text-[10px] tracking-[3px] text-gray-3 mb-1">{country.code}</div>
-                <div className="font-cormorant italic text-2xl text-white group-hover:text-gold transition-colors duration-300 mb-1">
-                  {country.name}
-                </div>
-                <div className="text-[9px] tracking-[1px] text-gray-3 italic">
-                  {country.subtitle}
-                </div>
-              </div>
-            </Link>
+                  <div className="absolute bottom-0 left-0 right-0 p-5" style={{ transform: 'translateZ(20px)' }}>
+                    <div className="text-[10px] tracking-[3px] text-gray-3 mb-1">{country.code}</div>
+                    <div className="font-cormorant italic text-2xl text-white group-hover:text-gold transition-colors duration-300 mb-1">
+                      {country.name}
+                    </div>
+                    <div className="text-[9px] tracking-[1px] text-gray-3 italic">
+                      {country.subtitle}
+                    </div>
+                  </div>
+                </TiltCard3D>
+              </Link>
+            </Reveal3D>
           ))}
         </div>
       </section>
 
       {/* CONTINENTS GRID */}
       <section className="py-16 px-8 max-w-7xl mx-auto border-t border-black-3">
-        <div className="flex items-center gap-4 mb-12">
-          <OryginStar size={16} />
-          <span className="text-[9px] tracking-[5px] text-gold-dark">CINQ CONTINENTS</span>
-        </div>
+        <Reveal3D>
+          <div className="flex items-center gap-4 mb-12">
+            <OryginStar size={16} />
+            <span className="text-[9px] tracking-[5px] text-gold-dark">CINQ CONTINENTS</span>
+          </div>
+        </Reveal3D>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {CONTINENTS.map(continent => (
-            <Link
-              key={continent.id}
-              to={`/${continent.id}`}
-              className="group border border-black-3 p-6 text-center hover:border-gold-dark transition-all duration-300"
-            >
-              <div className="text-4xl mb-4">{continent.emoji}</div>
-              <div className="font-cormorant italic text-lg text-white group-hover:text-gold transition-colors mb-2">
-                {continent.name}
-              </div>
-              <div className="text-[8px] tracking-[2px] text-gray-1 mb-3">
-                {continent.countryCount} PAYS
-              </div>
-              {continent.status === 'available' ? (
-                <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
-              ) : (
-                <span className="text-[8px] tracking-[3px] text-gray-2">— BIENTÔT</span>
-              )}
-            </Link>
+          {CONTINENTS.map((continent, i) => (
+            <Reveal3D key={continent.id} delay={i * 0.1} rotateX={18} translateY={50}>
+              <Link to={`/${continent.id}`} className="block">
+                <TiltCard3D intensity={16} glare={false} className="group border border-black-3 p-6 text-center hover:border-gold-dark transition-colors duration-300 h-full">
+                  <div className="text-4xl mb-4" style={{ transform: 'translateZ(40px)' }}>{continent.emoji}</div>
+                  <div className="font-cormorant italic text-lg text-white group-hover:text-gold transition-colors mb-2" style={{ transform: 'translateZ(20px)' }}>
+                    {continent.name}
+                  </div>
+                  <div className="text-[8px] tracking-[2px] text-gray-1 mb-3" style={{ transform: 'translateZ(15px)' }}>
+                    {continent.countryCount} PAYS
+                  </div>
+                  {continent.status === 'available' ? (
+                    <span className="text-[8px] tracking-[3px] text-gold" style={{ transform: 'translateZ(25px)' }}>✦ DISPONIBLE</span>
+                  ) : (
+                    <span className="text-[8px] tracking-[3px] text-gray-2" style={{ transform: 'translateZ(25px)' }}>— BIENTÔT</span>
+                  )}
+                </TiltCard3D>
+              </Link>
+            </Reveal3D>
           ))}
         </div>
       </section>
 
       {/* COUNTDOWN */}
-      <section className="py-20 px-8 border-t border-black-3 text-center">
-        <p className="text-[9px] tracking-[6px] text-gray-1 mb-10">PROCHAIN DROP DANS</p>
-        <Countdown targetDate={DROP_TARGET} />
-      </section>
+      <Reveal3D>
+        <section className="py-20 px-8 border-t border-black-3 text-center relative overflow-hidden">
+          <Scene3D count={20} className="opacity-50" />
+          <p className="text-[9px] tracking-[6px] text-gray-1 mb-10 relative z-10">PROCHAIN DROP DANS</p>
+          <div className="relative z-10"><Countdown targetDate={DROP_TARGET} /></div>
+        </section>
+      </Reveal3D>
 
       {/* EMAIL SIGNUP */}
-      <section className="py-20 px-8 border-t border-black-3 text-center">
-        <OryginStar size={32} className="mx-auto mb-6 opacity-60" />
-        <h2 className="font-cormorant italic text-4xl text-white mb-3">
-          Rejoindre le mouvement
-        </h2>
-        <p className="text-[10px] tracking-[3px] text-gray-1 mb-8">
-          SOYEZ NOTIFIÉ EN AVANT-PREMIÈRE
-        </p>
-        <EmailSignup />
-      </section>
+      <Reveal3D>
+        <section className="py-20 px-8 border-t border-black-3 text-center">
+          <OryginStar size={32} className="mx-auto mb-6 opacity-60" />
+          <h2 className="font-cormorant italic text-4xl text-white mb-3">
+            Rejoindre le mouvement
+          </h2>
+          <p className="text-[10px] tracking-[3px] text-gray-1 mb-8">
+            SOYEZ NOTIFIÉ EN AVANT-PREMIÈRE
+          </p>
+          <EmailSignup />
+        </section>
+      </Reveal3D>
 
       {/* MANIFESTO QUOTE */}
-      <section className="py-24 px-8 border-t border-black-3 text-center">
-        <OryginStar size={28} className="mx-auto mb-8 opacity-40 animate-shimmer" />
-        <p className="text-[8px] tracking-[5px] text-gold-dark mb-6">MANIFESTO</p>
-        <blockquote className="font-cormorant italic text-4xl md:text-5xl text-white max-w-2xl mx-auto leading-tight mb-6">
-          "Chaque culture a une origine.<br />Chaque origine a un style."
-        </blockquote>
-        <div className="w-8 h-px bg-gold-dark/30 mx-auto mb-4" />
-        <p className="text-[8px] tracking-[5px] text-gold-dark">
-          — ORYGIN · GLOBAL STREET CULTURE
-        </p>
-      </section>
+      <Reveal3D rotateX={10} translateY={50}>
+        <section className="py-24 px-8 border-t border-black-3 text-center relative overflow-hidden">
+          <Scene3D count={15} className="opacity-40" />
+          <OryginStar size={28} className="mx-auto mb-8 opacity-40 animate-shimmer relative z-10" />
+          <p className="text-[8px] tracking-[5px] text-gold-dark mb-6 relative z-10">MANIFESTO</p>
+          <blockquote className="font-cormorant italic text-4xl md:text-5xl text-white max-w-2xl mx-auto leading-tight mb-6 relative z-10">
+            "Chaque culture a une origine.<br />Chaque origine a un style."
+          </blockquote>
+          <div className="w-8 h-px bg-gold-dark/30 mx-auto mb-4 relative z-10" />
+          <p className="text-[8px] tracking-[5px] text-gold-dark relative z-10">
+            — ORYGIN · GLOBAL STREET CULTURE
+          </p>
+        </section>
+      </Reveal3D>
     </div>
   );
 }

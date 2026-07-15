@@ -66,8 +66,10 @@ export default function Navbar() {
 
           {/* Center logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0 group md:absolute md:left-1/2 md:-translate-x-1/2">
-            <OryginStar size={28} />
-            <span className="font-cormorant italic text-xl text-gold-gradient leading-none">Orygin</span>
+            <div className="transition-transform duration-500 group-hover:rotate-[360deg]">
+              <OryginStar size={28} />
+            </div>
+            <span className="font-cormorant italic text-xl text-gold-gradient leading-none transition-transform duration-300 group-hover:scale-110">Orygin</span>
           </Link>
 
           {/* Right icons */}

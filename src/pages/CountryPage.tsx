@@ -5,6 +5,9 @@ import { COUNTRIES, PRODUCTS_BY_COUNTRY } from '../data/countries';
 import type { Product } from '../data/countries';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
+import TiltCard3D from '../components/TiltCard3D';
+import Reveal3D from '../components/Reveal3D';
+import Scene3D from '../components/Scene3D';
 
 type SeasonFilter = 'ete' | 'hiver';
 
@@ -57,13 +60,13 @@ function ProductModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 modal3d-in"
       style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
         className="relative w-full max-w-5xl max-h-[90vh] bg-black-2 border border-black-3 flex flex-col md:flex-row overflow-hidden"
-        style={{ boxShadow: '0 0 80px rgba(201,168,76,0.08), 0 0 1px rgba(201,168,76,0.15)' }}
+        style={{ boxShadow: '0 0 80px rgba(201,168,76,0.08), 0 0 1px rgba(201,168,76,0.15)', transformStyle: 'preserve-3d' }}
       >
         {/* Close */}
         <button
@@ -245,12 +248,11 @@ function ProductCard({
       className={`group cursor-pointer transition-all duration-300 ${isUnavailable ? 'opacity-50' : ''}`}
       onClick={onClick}
     >
-      {/* Image */}
-      <div className="relative overflow-hidden aspect-[3/4] bg-black-3 mb-4">
+      <TiltCard3D intensity={10} className="relative overflow-hidden aspect-[3/4] bg-black-3 mb-4 shadow3d">
         <img
           src={product.images[0]}
           alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.04]"
+          className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
           style={{
             filter: isUnavailable
               ? 'grayscale(1) brightness(0.5)'
@@ -260,7 +262,7 @@ function ProductCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black-1/60 via-transparent to-transparent" />
 
         {/* Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3" style={{ transform: 'translateZ(40px)' }}>
           <span className="text-[7px] tracking-[3px] bg-black-1/90 text-gold-dark px-2.5 py-1 backdrop-blur-sm border border-black-3/60">
             {PRODUCT_TYPE_LABELS[product.type]}
           </span>
@@ -277,13 +279,13 @@ function ProductCard({
 
         {/* Quick view hint */}
         {!isUnavailable && (
-          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0" style={{ transform: 'translateZ(30px)' }}>
             <span className="text-[8px] tracking-[4px] text-white bg-black-1/80 backdrop-blur-sm px-4 py-2 border border-black-3">
               VOIR LE PRODUIT
             </span>
           </div>
         )}
-      </div>
+      </TiltCard3D>
 
       {/* Info */}
       <div>
@@ -318,14 +320,15 @@ export default function CountryPage() {
 
   if (country.status === 'soon') {
     return (
-      <div className="min-h-screen bg-black-1 pt-16 flex flex-col items-center justify-center text-center px-8">
-        <div className="animate-float mb-8 text-8xl">{country.flag}</div>
-        <h1 className="font-cormorant italic text-7xl text-gold-gradient mb-4">{country.name}</h1>
-        <p className="text-[10px] tracking-[4px] text-gray-1 mb-2">{country.subtitle}</p>
-        <p className="text-[9px] tracking-[4px] text-gray-2 mb-12">— BIENTÔT DISPONIBLE</p>
+      <div className="min-h-screen bg-black-1 pt-16 flex flex-col items-center justify-center text-center px-8 page3d-in">
+        <Scene3D count={30} className="opacity-50" />
+        <div className="animate-float mb-8 text-8xl relative z-10">{country.flag}</div>
+        <h1 className="font-cormorant italic text-7xl text-gold-gradient mb-4 relative z-10">{country.name}</h1>
+        <p className="text-[10px] tracking-[4px] text-gray-1 mb-2 relative z-10">{country.subtitle}</p>
+        <p className="text-[9px] tracking-[4px] text-gray-2 mb-12 relative z-10">— BIENTÔT DISPONIBLE</p>
         <Link
           to={`/${country.continent}`}
-          className="text-[9px] tracking-[4px] text-gold-dark border border-gold-dark/40 px-6 py-3 hover:bg-gold-dark/10 transition-colors"
+          className="text-[9px] tracking-[4px] text-gold-dark border border-gold-dark/40 px-6 py-3 hover:bg-gold-dark/10 transition-colors relative z-10"
         >
           ← RETOUR {(continentLabel[country.continent] ?? country.continent).toUpperCase()}
         </Link>
@@ -343,7 +346,7 @@ export default function CountryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black-1 pt-16">
+    <div className="min-h-screen bg-black-1 pt-16 page3d-in">
       {/* HERO — full screen */}
       <div
         className="relative h-[100svh] flex flex-col items-center justify-center overflow-hidden"
@@ -356,6 +359,7 @@ export default function CountryPage() {
         {/* Layered overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-black-1/30 via-black-1/50 to-black-1" />
         <div className="absolute inset-0 bg-gradient-to-t from-black-1/80 via-transparent to-transparent" />
+        <Scene3D count={35} className="opacity-40" />
 
         {/* Breadcrumb */}
         <div className="absolute top-8 left-8 flex items-center gap-2 z-10">
@@ -432,12 +436,13 @@ export default function CountryPage() {
         {/* Products grid */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-            {filtered.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onClick={() => setSelectedProduct(product)}
-              />
+            {filtered.map((product, i) => (
+              <Reveal3D key={product.id} delay={i * 0.1} rotateX={15} translateY={50}>
+                <ProductCard
+                  product={product}
+                  onClick={() => setSelectedProduct(product)}
+                />
+              </Reveal3D>
             ))}
           </div>
         ) : (

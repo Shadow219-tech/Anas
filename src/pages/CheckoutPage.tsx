@@ -13,12 +13,12 @@ import { ChevronRight, Lock, ShoppingBag, CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 import OryginStar from '../components/OryginStar';
+import Scene3D from '../components/Scene3D';
+import Reveal3D from '../components/Reveal3D';
 
 // ── Stripe init ────────────────────────────────────────────────────────────────
 const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
-
-// ── Stripe appearance theme — luxury black & gold ─────────────────────────────
 const STRIPE_APPEARANCE = {
   theme: 'night' as const,
   variables: {
@@ -364,7 +364,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black-1 pt-16" style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 60%)' }}>
+    <div className="min-h-screen pt-16 page3d-in" style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 60%)' }}>
+      <Scene3D count={25} className="opacity-30" />
       {/* Golden ambient top glow */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none z-0"

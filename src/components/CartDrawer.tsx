@@ -14,7 +14,7 @@ export default function CartDrawer() {
         className="fixed inset-0 z-50 bg-black-1/70 backdrop-blur-sm"
         onClick={closeCart}
       />
-      <div className="fixed right-0 top-0 h-full w-full max-w-md z-50 bg-black-2 border-l border-black-3 flex flex-col">
+      <div className="fixed right-0 top-0 h-full w-full max-w-md z-50 bg-black-2 border-l border-black-3 flex flex-col drawer3d-in">
         {/* Header */}
         <div className="flex items-center justify-between px-8 py-6 border-b border-black-3">
           <div className="flex items-center gap-3">
