@@ -139,7 +139,7 @@ export default function ContinentPage() {
                 <Reveal3D key={country.code} delay={i * 0.1} rotateX={18} translateY={50}>
                   <Link to={`/pays/${country.code.toLowerCase()}`} className="block">
                     <TiltCard3D intensity={12} className="group relative border border-black-3 hover:border-gold-dark transition-colors duration-300 overflow-hidden h-full">
-                      <div className="p-6" style={{ transform: 'translateZ(20px)' }}>
+                      <div className="p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div>
                             <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
@@ -150,7 +150,7 @@ export default function ContinentPage() {
                               {country.subtitle}
                             </div>
                           </div>
-                          <span className="text-2xl" style={{ transform: 'translateZ(30px)' }}>{country.flag}</span>
+                          <span className="text-2xl">{country.flag}</span>
                         </div>
                         <div className="flex items-center justify-between pt-4 border-t border-black-3">
                           <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>

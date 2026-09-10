@@ -262,7 +262,7 @@ function ProductCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black-1/60 via-transparent to-transparent" />
 
         {/* Badge */}
-        <div className="absolute top-3 left-3" style={{ transform: 'translateZ(40px)' }}>
+        <div className="absolute top-3 left-3">
           <span className="text-[7px] tracking-[3px] bg-black-1/90 text-gold-dark px-2.5 py-1 backdrop-blur-sm border border-black-3/60">
             {PRODUCT_TYPE_LABELS[product.type]}
           </span>
@@ -279,7 +279,7 @@ function ProductCard({
 
         {/* Quick view hint */}
         {!isUnavailable && (
-          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0" style={{ transform: 'translateZ(30px)' }}>
+          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
             <span className="text-[8px] tracking-[4px] text-white bg-black-1/80 backdrop-blur-sm px-4 py-2 border border-black-3">
               VOIR LE PRODUIT
             </span>

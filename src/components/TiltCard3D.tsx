@@ -10,6 +10,8 @@ interface TiltCard3DProps {
 
 /**
  * Mouse-tracking 3D perspective tilt card with optional glare highlight.
+ * Uses perspective on the parent and rotateX/Y on hover — no preserve-3d
+ * on children (which breaks with overflow:hidden).
  */
 export default function TiltCard3D({
   children,
@@ -33,13 +35,13 @@ export default function TiltCard3D({
     const rotY = px * intensity;
     const rotX = -py * intensity;
     setTransform(
-      `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(10px)`
+      `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`
     );
     setGlarePos({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, active: true });
   };
 
   const handleLeave = () => {
-    setTransform('perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)');
+    setTransform('perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)');
     setGlarePos(g => ({ ...g, active: false }));
   };
 
@@ -51,7 +53,7 @@ export default function TiltCard3D({
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
     >
-      <div className="tilt-3d-inner relative w-full h-full">
+      <div className="tilt-3d-inner">
         {children}
         {glare && (
           <div

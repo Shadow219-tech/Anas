@@ -167,19 +167,18 @@ export default function HomePage() {
                       src={country.heroImage}
                       alt={country.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      style={{ transform: 'translateZ(0)' }}
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/40 to-transparent" />
                   <div className="absolute inset-0 bg-black-1/20 group-hover:bg-black-1/10 transition-colors duration-300" />
 
-                  <div className="absolute top-4 left-4" style={{ transform: 'translateZ(30px)' }}>
+                  <div className="absolute top-4 left-4">
                     <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-2 py-1 bg-black-1/60 backdrop-blur-sm">
                       ✦ DISPONIBLE
                     </span>
                   </div>
 
-                  <div className="absolute bottom-0 left-0 right-0 p-5" style={{ transform: 'translateZ(20px)' }}>
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
                     <div className="text-[10px] tracking-[3px] text-gray-3 mb-1">{country.code}</div>
                     <div className="font-cormorant italic text-2xl text-white group-hover:text-gold transition-colors duration-300 mb-1">
                       {country.name}
@@ -209,17 +208,17 @@ export default function HomePage() {
             <Reveal3D key={continent.id} delay={i * 0.1} rotateX={18} translateY={50}>
               <Link to={`/${continent.id}`} className="block">
                 <TiltCard3D intensity={16} glare={false} className="group border border-black-3 p-6 text-center hover:border-gold-dark transition-colors duration-300 h-full">
-                  <div className="text-4xl mb-4" style={{ transform: 'translateZ(40px)' }}>{continent.emoji}</div>
-                  <div className="font-cormorant italic text-lg text-white group-hover:text-gold transition-colors mb-2" style={{ transform: 'translateZ(20px)' }}>
+                  <div className="text-4xl mb-4">{continent.emoji}</div>
+                  <div className="font-cormorant italic text-lg text-white group-hover:text-gold transition-colors mb-2">
                     {continent.name}
                   </div>
-                  <div className="text-[8px] tracking-[2px] text-gray-1 mb-3" style={{ transform: 'translateZ(15px)' }}>
+                  <div className="text-[8px] tracking-[2px] text-gray-1 mb-3">
                     {continent.countryCount} PAYS
                   </div>
                   {continent.status === 'available' ? (
-                    <span className="text-[8px] tracking-[3px] text-gold" style={{ transform: 'translateZ(25px)' }}>✦ DISPONIBLE</span>
+                    <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
                   ) : (
-                    <span className="text-[8px] tracking-[3px] text-gray-2" style={{ transform: 'translateZ(25px)' }}>— BIENTÔT</span>
+                    <span className="text-[8px] tracking-[3px] text-gray-2">— BIENTÔT</span>
                   )}
                 </TiltCard3D>
               </Link>
