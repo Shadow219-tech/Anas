@@ -164,11 +164,8 @@ function StripePaymentForm({
       setError(confirmErr.message ?? 'Paiement refusé. Réessayez.');
       setLoading(false);
     } else {
-      // Payment succeeded without redirect (e.g. card)
-      await supabase
-        .from('orders')
-        .update({ status: 'paid', stripe_payment_status: 'succeeded' })
-        .eq('id', orderId);
+      // The webhook (stripe-webhook) will confirm the order server-side.
+      // We just redirect to the confirmation page — no client-side DB writes.
       onSuccess();
     }
   };
@@ -315,7 +312,6 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           orderId: order.id,
           orderNumber: order.order_number,
-          amount: total * 100,
           currency: 'eur',
           customerEmail: form.email,
           customerName: `${form.firstName} ${form.lastName}`,

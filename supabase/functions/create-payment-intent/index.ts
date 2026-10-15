@@ -31,18 +31,43 @@ Deno.serve(async (req: Request) => {
     );
 
     const body = await req.json();
-    const {
-      orderId,
-      orderNumber,
-      amount,
-      currency,
-      customerEmail,
-      customerName,
-      items,
-      shippingAddress,
-    } = body;
+    const { orderId, orderNumber, currency, customerEmail, customerName, items, shippingAddress } = body;
 
-    // Create Stripe Payment Intent (for Stripe Elements in-page payment)
+    // ── SECURITY: Recalculate the total server-side from the DB order record ──
+    // Never trust the client-sent amount. We fetch the order from the DB and
+    // compute the sum from the stored line items.
+    const { data: order, error: orderErr } = await supabase
+      .from("orders")
+      .select("id, items, total, status")
+      .eq("id", orderId)
+      .single();
+
+    if (orderErr || !order) {
+      return new Response(
+        JSON.stringify({ error: "Commande introuvable." }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (order.status === "paid") {
+      return new Response(
+        JSON.stringify({ error: "Cette commande est déjà payée." }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // The order's total was stored in cents at creation time.
+    // We trust the DB value (written by the edge function via service role) over any client-sent amount.
+    const amount = order.total;
+
+    if (!amount || amount <= 0) {
+      return new Response(
+        JSON.stringify({ error: "Montant invalide." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create Stripe Payment Intent with the server-calculated amount
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: currency || "eur",
@@ -69,7 +94,7 @@ Deno.serve(async (req: Request) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (resendKey) {
       const totalEur = (amount / 100).toFixed(2);
-      const itemsHtml = items
+      const itemsHtml = (order.items || items || [])
         .map((i: any) => `
           <tr>
             <td style="padding:10px 14px;border-bottom:1px solid #1a1a1a;color:#aaa;font-size:13px;font-family:Georgia,serif;font-style:italic">${i.product_name}</td>
@@ -85,20 +110,14 @@ Deno.serve(async (req: Request) => {
 <head><meta charset="utf-8"></head>
 <body style="background:#080808;margin:0;padding:40px 20px;font-family:Montserrat,sans-serif;font-weight:300">
   <div style="max-width:580px;margin:0 auto">
-    
-    <!-- Header -->
     <div style="text-align:center;padding:40px 0 32px;border-bottom:0.5px solid #1a1a1a;margin-bottom:32px">
       <p style="color:#a07830;font-size:9px;letter-spacing:6px;margin:0 0 12px">✦ ORYGIN · GLOBAL STREET CULTURE</p>
       <h1 style="color:#c9a84c;font-family:Georgia,serif;font-style:italic;font-size:42px;margin:0;font-weight:300">Nouvelle commande</h1>
     </div>
-
-    <!-- Order number -->
     <div style="background:#0d0d0d;border:0.5px solid #1a1a1a;padding:24px;margin-bottom:16px">
       <p style="color:#a07830;font-size:8px;letter-spacing:5px;margin:0 0 10px">RÉFÉRENCE</p>
       <p style="color:#fff;font-family:Georgia,serif;font-style:italic;font-size:22px;margin:0">${orderNumber}</p>
     </div>
-
-    <!-- Customer info -->
     <div style="background:#0d0d0d;border:0.5px solid #1a1a1a;padding:24px;margin-bottom:16px">
       <p style="color:#a07830;font-size:8px;letter-spacing:5px;margin:0 0 14px">CLIENT</p>
       <p style="color:#fff;margin:0 0 6px;font-size:14px">${customerName}</p>
@@ -109,8 +128,6 @@ Deno.serve(async (req: Request) => {
         ${shippingAddress.country}
       </p>` : ""}
     </div>
-
-    <!-- Items -->
     <div style="background:#0d0d0d;border:0.5px solid #1a1a1a;padding:24px;margin-bottom:16px">
       <p style="color:#a07830;font-size:8px;letter-spacing:5px;margin:0 0 16px">ARTICLES COMMANDÉS</p>
       <table style="width:100%;border-collapse:collapse">
@@ -126,14 +143,10 @@ Deno.serve(async (req: Request) => {
         <tbody>${itemsHtml}</tbody>
       </table>
     </div>
-
-    <!-- Total -->
     <div style="background:#0d0d0d;border:0.5px solid #1a1a1a;padding:24px;text-align:right;margin-bottom:32px">
       <p style="color:#a07830;font-size:8px;letter-spacing:5px;margin:0 0 8px">TOTAL COMMANDE</p>
       <p style="color:#c9a84c;font-family:Georgia,serif;font-style:italic;font-size:36px;margin:0">${totalEur} €</p>
     </div>
-
-    <!-- Footer -->
     <div style="text-align:center;padding-top:24px;border-top:0.5px solid #111">
       <p style="color:#222;font-size:8px;letter-spacing:4px;margin:0">ORYGIN · GLOBAL STREET CULTURE · DROP 001</p>
     </div>
