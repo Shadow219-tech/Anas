@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { Lock, X, ChevronLeft, ChevronRight, Plus, ShoppingBag } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { COUNTRIES, PRODUCTS_BY_COUNTRY } from '../data/countries';
 import type { Product } from '../data/countries';
-import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
 import TiltCard3D from '../components/TiltCard3D';
 import Reveal3D from '../components/Reveal3D';
@@ -20,233 +19,14 @@ const PRODUCT_TYPE_LABELS: Record<string, string> = {
   'ensemble-hiver': 'ENSEMBLE HIVER',
 };
 
-// ── Product Modal ─────────────────────────────────────────────────────────────
-function ProductModal({
-  product,
-  countryCode,
-  countryName,
-  onClose,
-}: {
-  product: Product;
-  countryCode: string;
-  countryName: string;
-  onClose: () => void;
-}) {
-  const [activeImg, setActiveImg] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [added, setAdded] = useState(false);
-  const { addItem } = useCart();
-  const isUnavailable = product.availability === 'unavailable';
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [onClose]);
-
-  const handleAdd = () => {
-    if (!selectedSize || isUnavailable) return;
-    addItem({ ...product, image: product.images[0] } as any, selectedSize, countryCode, countryName);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2500);
-  };
-
-  const prev = () => setActiveImg(i => (i - 1 + product.images.length) % product.images.length);
-  const next = () => setActiveImg(i => (i + 1) % product.images.length);
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 modal3d-in"
-      style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)' }}
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className="relative w-full max-w-5xl max-h-[90vh] bg-black-2 border border-black-3 flex flex-col md:flex-row overflow-hidden"
-        style={{ boxShadow: '0 0 80px rgba(201,168,76,0.08), 0 0 1px rgba(201,168,76,0.15)', transformStyle: 'preserve-3d' }}
-      >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 text-gray-3 hover:text-white transition-colors bg-black-2/80 backdrop-blur-sm p-1.5"
-        >
-          <X size={18} />
-        </button>
-
-        {/* Left — image gallery */}
-        <div className="relative w-full md:w-[55%] bg-black-3 flex-shrink-0">
-          {/* Main image */}
-          <div className="relative aspect-[3/4] md:h-full md:aspect-auto overflow-hidden">
-            {product.images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt={product.name}
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
-                  i === activeImg ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-                } ${isUnavailable ? 'grayscale' : ''}`}
-                style={{ filter: isUnavailable ? 'grayscale(1) brightness(0.6)' : 'brightness(1.05) contrast(1.05) saturate(1.1)' }}
-              />
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-black-1/30 to-transparent pointer-events-none" />
-
-            {/* Nav arrows */}
-            {product.images.length > 1 && (
-              <>
-                <button
-                  onClick={prev}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black-1/70 backdrop-blur-sm p-2 text-gray-3 hover:text-gold transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  onClick={next}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-black-1/70 backdrop-blur-sm p-2 text-gray-3 hover:text-gold transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </>
-            )}
-
-            {/* Type badge */}
-            <div className="absolute top-4 left-4">
-              <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
-                {PRODUCT_TYPE_LABELS[product.type]}
-              </span>
-            </div>
-          </div>
-
-          {/* Thumbnail strip */}
-          {product.images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`w-12 h-14 overflow-hidden border-2 transition-all duration-200 ${
-                    i === activeImg ? 'border-gold' : 'border-black-3 opacity-50 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Right — product info */}
-        <div className="flex-1 flex flex-col p-8 overflow-y-auto">
-          {/* Country / collection */}
-          <div className="flex items-center gap-2 mb-6">
-            <OryginStar size={14} />
-            <span className="text-[8px] tracking-[4px] text-gold-dark">{countryName.toUpperCase()} · DROP 001</span>
-          </div>
-
-          <h2 className="font-cormorant italic text-3xl md:text-4xl text-white leading-tight mb-2">
-            {product.name}
-          </h2>
-
-          {/* Price */}
-          <div className="flex items-baseline gap-3 mb-6">
-            <span
-              className="font-cormorant italic text-3xl"
-              style={{ background: 'linear-gradient(135deg, #ede0b8 0%, #c9a84c 50%, #f0e0a0 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-            >
-              {product.price} €
-            </span>
-            <span className="text-[8px] tracking-[3px] text-gray-2">TTC · LIVRAISON OFFERTE</span>
-          </div>
-
-          {/* Description */}
-          {product.description && (
-            <p className="text-sm text-gray-3 leading-loose mb-6 border-t border-black-3 pt-5">
-              {product.description}
-            </p>
-          )}
-
-          {isUnavailable ? (
-            <div className="mt-auto">
-              <div className="flex items-center gap-3 border border-black-3 p-4 text-center justify-center">
-                <Lock size={14} className="text-gray-2" />
-                <span className="text-[9px] tracking-[4px] text-gray-2">{product.unavailableReason}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-auto space-y-5">
-              {/* Size selector */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-[9px] tracking-[4px] text-gold-dark">TAILLE</span>
-                  <button className="text-[8px] tracking-[2px] text-gray-2 underline underline-offset-2 hover:text-white transition-colors">
-                    Guide des tailles
-                  </button>
-                </div>
-                <div className="grid grid-cols-6 gap-2">
-                  {product.sizes.map(size => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`py-2.5 text-[9px] tracking-[1px] border transition-all duration-200 ${
-                        selectedSize === size
-                          ? 'border-gold bg-gold/10 text-gold'
-                          : 'border-black-3 text-gray-3 hover:border-gold-dark/50 hover:text-white'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Add to cart */}
-              <button
-                onClick={handleAdd}
-                className={`w-full py-4 text-[9px] tracking-[5px] transition-all duration-300 flex items-center justify-center gap-3 ${
-                  added
-                    ? 'bg-gold-dark text-white'
-                    : selectedSize
-                    ? 'bg-gold text-black-1 hover:bg-gold-light'
-                    : 'bg-black-3 text-gray-2 cursor-not-allowed'
-                }`}
-                style={selectedSize && !added ? { boxShadow: '0 0 30px rgba(201,168,76,0.2)' } : {}}
-              >
-                {added ? (
-                  <>✦ AJOUTÉ AU PANIER</>
-                ) : (
-                  <><ShoppingBag size={14} />{selectedSize ? 'AJOUTER AU PANIER' : 'CHOISIR UNE TAILLE'}</>
-                )}
-              </button>
-
-              {/* Trust badges */}
-              <div className="flex justify-between pt-4 border-t border-black-3">
-                {['PIÈCE LIMITÉE', 'LIVRAISON OFFERTE', 'RETOUR GRATUIT'].map(t => (
-                  <span key={t} className="text-[7px] tracking-[2px] text-gray-2 text-center">{t}</span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Product Grid Card ─────────────────────────────────────────────────────────
-function ProductCard({
-  product, onClick,
-}: {
-  product: Product;
-  onClick: () => void;
-}) {
+function ProductCard({ product }: { product: Product }) {
   const isUnavailable = product.availability === 'unavailable';
 
   return (
-    <div
-      className={`group cursor-pointer transition-all duration-300 ${isUnavailable ? 'opacity-50' : ''}`}
-      onClick={onClick}
+    <Link
+      to={`/produit/${product.id}`}
+      className={`group block transition-all duration-300 ${isUnavailable ? 'opacity-50' : ''}`}
     >
       <TiltCard3D intensity={10} className="relative overflow-hidden aspect-[3/4] bg-black-3 mb-4 shadow3d">
         <img
@@ -299,7 +79,7 @@ function ProductCard({
           {product.price} €
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -307,7 +87,6 @@ function ProductCard({
 export default function CountryPage() {
   const { code } = useParams<{ code: string }>();
   const [season, setSeason] = useState<SeasonFilter>('ete');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const productsRef = useRef<HTMLDivElement>(null);
 
   const country = COUNTRIES.find(c => c.code.toLowerCase() === code?.toLowerCase());
@@ -438,10 +217,7 @@ export default function CountryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
             {filtered.map((product, i) => (
               <Reveal3D key={product.id} delay={i * 0.1} rotateX={15} translateY={50}>
-                <ProductCard
-                  product={product}
-                  onClick={() => setSelectedProduct(product)}
-                />
+                <ProductCard product={product} />
               </Reveal3D>
             ))}
           </div>
@@ -453,16 +229,6 @@ export default function CountryPage() {
           </div>
         )}
       </div>
-
-      {/* Product Modal */}
-      {selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          countryCode={country.code}
-          countryName={country.name}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
     </div>
   );
 }

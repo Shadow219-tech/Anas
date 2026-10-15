@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import ContinentPage from './pages/ContinentPage';
 import CountryPage from './pages/CountryPage';
+import ProductPage from './pages/ProductPage';
 import HistoirePage from './pages/HistoirePage';
 import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
@@ -27,6 +28,7 @@ export default function App() {
                 <Route path="/confirmation/:orderNumber" element={<ConfirmationPage />} />
                 <Route path="/compte" element={<AccountPage />} />
                 <Route path="/pays/:code" element={<CountryPage />} />
+                <Route path="/produit/:slug" element={<ProductPage />} />
                 <Route path="/:continent" element={<ContinentPage />} />
               </Routes>
             </main>

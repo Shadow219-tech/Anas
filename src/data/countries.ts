@@ -203,3 +203,14 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
     },
   ],
 };
+
+export function findProductById(id: string): { product: Product; countryCode: string; countryName: string } | null {
+  for (const [countryCode, products] of Object.entries(PRODUCTS_BY_COUNTRY)) {
+    const product = products.find(p => p.id === id);
+    if (product) {
+      const country = COUNTRIES.find(c => c.code === countryCode);
+      return { product, countryCode, countryName: country?.name ?? countryCode };
+    }
+  }
+  return null;
+}
