@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
-import { CONTINENTS, COUNTRIES, PRODUCTS_BY_COUNTRY } from '../data/countries';
+import { CONTINENTS, COUNTRIES } from '../data/countries';
 import OryginStar from '../components/OryginStar';
 import Countdown from '../components/Countdown';
 import Scene3D from '../components/Scene3D';
@@ -8,9 +8,8 @@ import TiltCard3D from '../components/TiltCard3D';
 import Reveal3D from '../components/Reveal3D';
 
 const DROP_DATES: Record<string, Date> = {
-  ameriques: new Date('2026-12-01T00:00:00'),
-  asie: new Date('2026-09-15T00:00:00'),
-  oceanie: new Date('2027-03-01T00:00:00'),
+  europe: new Date('2026-09-15T00:00:00'),
+  oceanie: new Date('2026-12-01T00:00:00'),
 };
 
 export default function ContinentPage() {
@@ -24,6 +23,7 @@ export default function ContinentPage() {
   const countries = COUNTRIES.filter(c => c.continent === slug);
   const available = countries.filter(c => c.status === 'available');
   const coming = countries.filter(c => c.status === 'soon');
+
   const isSoon = continent.status === 'soon';
 
   const submit = (e: React.FormEvent) => {
@@ -57,6 +57,7 @@ export default function ContinentPage() {
             </div>
           )}
 
+          {/* Countries preview */}
           {countries.length > 0 && (
             <div className="mb-16 max-w-2xl">
               <p className="text-[9px] tracking-[4px] text-gray-1 mb-6">PAYS À VENIR</p>
@@ -73,6 +74,7 @@ export default function ContinentPage() {
             </div>
           )}
 
+          {/* Email */}
           {!sent ? (
             <form onSubmit={submit} className="flex w-full max-w-md">
               <input
@@ -117,13 +119,13 @@ export default function ContinentPage() {
             {continent.name}
           </h1>
           <p className="text-[10px] tracking-[5px] text-gray-1">
-            {continent.countryCount} PAYS · UNE VESTE PAR PAYS
+            {continent.countryCount} PAYS · GLOBAL STREET CULTURE
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-16">
-        {/* Available countries with their jacket */}
+        {/* Available */}
         {available.length > 0 && (
           <div className="mb-16">
             <Reveal3D>
@@ -132,51 +134,35 @@ export default function ContinentPage() {
                 <span className="text-[9px] tracking-[5px] text-gold">DISPONIBLE</span>
               </div>
             </Reveal3D>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {available.map((country, i) => {
-                const jacket = PRODUCTS_BY_COUNTRY[country.code]?.[0];
-                return (
-                  <Reveal3D key={country.code} delay={i * 0.12} rotateX={18} translateY={50}>
-                    <Link to={jacket ? `/produit/${jacket.id}` : `/pays/${country.code.toLowerCase()}`} className="block">
-                      <TiltCard3D intensity={12} className="group relative border border-black-3 hover:border-gold-dark transition-colors duration-300 overflow-hidden h-full">
-                        {jacket && (
-                          <div className="relative aspect-[4/5] overflow-hidden">
-                            <img src={jacket.images[0]} alt={jacket.name}
-                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              style={{ filter: 'brightness(1.05) contrast(1.05)' }} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/30 to-transparent" />
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
-                              <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">
-                                {jacket?.name ?? country.name}
-                              </div>
-                              <div className="text-[9px] tracking-[1px] text-gray-1 italic mt-1">
-                                {country.flag} {country.name} · {country.subtitle}
-                              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {available.map((country, i) => (
+                <Reveal3D key={country.code} delay={i * 0.1} rotateX={18} translateY={50}>
+                  <Link to={`/pays/${country.code.toLowerCase()}`} className="block">
+                    <TiltCard3D intensity={12} className="group relative border border-black-3 hover:border-gold-dark transition-colors duration-300 overflow-hidden h-full">
+                      <div className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
+                            <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">
+                              {country.name}
+                            </div>
+                            <div className="text-[9px] tracking-[1px] text-gray-1 italic mt-1">
+                              {country.subtitle}
                             </div>
                           </div>
-                          <div className="flex items-center justify-between pt-4 border-t border-black-3">
-                            <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
-                            {jacket && (
-                              <span className="font-cormorant italic text-lg"
-                                style={{ background: 'linear-gradient(135deg, #c9a84c, #f0e0a0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                {jacket.price} €
-                              </span>
-                            )}
-                            <span className="text-[8px] tracking-[3px] text-gray-1 group-hover:text-gold transition-colors">
-                              VOIR →
-                            </span>
-                          </div>
+                          <span className="text-2xl">{country.flag}</span>
                         </div>
-                      </TiltCard3D>
-                    </Link>
-                  </Reveal3D>
-                );
-              })}
+                        <div className="flex items-center justify-between pt-4 border-t border-black-3">
+                          <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
+                          <span className="text-[8px] tracking-[3px] text-gray-1 group-hover:text-gold transition-colors">
+                            VOIR →
+                          </span>
+                        </div>
+                      </div>
+                    </TiltCard3D>
+                  </Link>
+                </Reveal3D>
+              ))}
             </div>
           </div>
         )}

@@ -12,8 +12,6 @@ import HistoirePage from './pages/HistoirePage';
 import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import AccountPage from './pages/AccountPage';
-import TrackOrderPage from './pages/TrackOrderPage';
-import AdminPage from './pages/AdminPage';
 
 export default function App() {
   return (
@@ -29,8 +27,6 @@ export default function App() {
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/confirmation/:orderNumber" element={<ConfirmationPage />} />
                 <Route path="/compte" element={<AccountPage />} />
-                <Route path="/suivre" element={<TrackOrderPage />} />
-                <Route path="/admin" element={<AdminPage />} />
                 <Route path="/pays/:code" element={<CountryPage />} />
                 <Route path="/produit/:slug" element={<ProductPage />} />
                 <Route path="/:continent" element={<ContinentPage />} />

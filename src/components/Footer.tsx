@@ -24,9 +24,9 @@ export default function Footer() {
             <div className="space-y-3">
               {[
                 { to: '/afrique', label: 'Afrique' },
-                { to: '/europe', label: 'Europe' },
                 { to: '/asie', label: 'Asie' },
                 { to: '/ameriques', label: 'Amériques' },
+                { to: '/europe', label: 'Europe' },
                 { to: '/oceanie', label: 'Océanie' },
               ].map(l => (
                 <Link key={l.to} to={l.to} className="block text-xs text-gray-3 hover:text-gold transition-colors font-cormorant italic">
@@ -41,8 +41,7 @@ export default function Footer() {
             <div className="space-y-3">
               {[
                 { to: '/histoire', label: 'Notre Histoire' },
-                { to: '/suivre', label: 'Suivre ma commande' },
-                { to: '/admin', label: 'Espace Admin' },
+                { to: '/', label: 'Drop 001' },
               ].map(l => (
                 <Link key={l.to} to={l.to} className="block text-xs text-gray-3 hover:text-gold transition-colors font-cormorant italic">
                   {l.label}
@@ -54,7 +53,7 @@ export default function Footer() {
 
         <div className="border-t border-black-3 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[8px] tracking-[3px] text-gray-2">
-            © 2026 ORYGIN · GLOBAL STREET CULTURE
+            © 2025 ORYGIN · GLOBAL STREET CULTURE
           </p>
           <p className="text-[8px] tracking-[3px] text-gray-2">
             LIVRAISON MONDIALE · PIÈCES LIMITÉES

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Search, X, User, Truck } from 'lucide-react';
+import { ShoppingBag, Search, X, User } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { COUNTRIES } from '../data/countries';
@@ -37,9 +37,9 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'ACCUEIL' },
     { to: '/afrique', label: 'AFRIQUE' },
-    { to: '/europe', label: 'EUROPE' },
     { to: '/asie', label: 'ASIE' },
     { to: '/ameriques', label: 'AMÉRIQUES' },
+    { to: '/europe', label: 'EUROPE' },
     { to: '/oceanie', label: 'OCÉANIE' },
   ];
 
@@ -80,11 +80,6 @@ export default function Navbar() {
             >
               {searchOpen ? <X size={16} /> : <Search size={16} />}
             </button>
-
-            {/* Track order link */}
-            <Link to="/suivre" className="hidden sm:block text-gray-3 hover:text-gold transition-colors" title="Suivre ma commande">
-              <Truck size={16} />
-            </Link>
 
             {/* Auth button */}
             {user ? (
