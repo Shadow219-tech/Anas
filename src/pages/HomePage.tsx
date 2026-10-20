@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { COUNTRIES, CONTINENTS } from '../data/countries';
+import { COUNTRIES, CONTINENTS, PRODUCTS_BY_COUNTRY, AVAILABLE_COUNTRIES } from '../data/countries';
 import OryginStar from '../components/OryginStar';
 import Star3D from '../components/Star3D';
 import Ticker from '../components/Ticker';
-import Countdown from '../components/Countdown';
 import Scene3D from '../components/Scene3D';
 import TiltCard3D from '../components/TiltCard3D';
 import Reveal3D from '../components/Reveal3D';
-
-const DROP_TARGET = new Date('2026-09-15T00:00:00');
-
-const AVAILABLE_COUNTRIES = COUNTRIES.filter(c => c.status === 'available');
+import Reviews from '../components/Reviews';
 
 export default function HomePage() {
   const [query, setQuery] = useState('');
@@ -35,13 +31,10 @@ export default function HomePage() {
     <div className="min-h-screen bg-black-1">
       {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center stars-bg overflow-hidden">
-        {/* 3D particle field */}
         <Scene3D count={50} />
-        {/* Radial glow */}
         <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-radial from-gold/5 to-transparent pointer-events-none" />
 
-        {/* Decorative corner stars */}
         <div className="absolute top-32 left-16 opacity-20 animate-float">
           <OryginStar size={60} />
         </div>
@@ -53,38 +46,32 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-3xl mx-auto">
-          {/* Badge */}
           <div className="opacity-0 animate-fade-in-up animate-delay-100 mb-8">
             <span className="inline-flex items-center gap-2 border border-gold-dark/40 px-5 py-2 text-[9px] tracking-[5px] text-gold-dark">
-              ✦ DROP 001 — QUATRE ORIGINES
+              ✦ DROP 001 — UNE VESTE PAR PAYS
             </span>
           </div>
 
-          {/* 3D Star */}
           <div className="opacity-0 animate-fade-in-up animate-delay-200 mb-6">
             <Star3D size={140} />
           </div>
 
-          {/* Title */}
           <div className="opacity-0 animate-fade-in-up animate-delay-300">
             <h1 className="font-cormorant italic font-light text-[100px] leading-[0.9] text-gold-gradient mb-4">
               Orygin
             </h1>
           </div>
 
-          {/* Subtitle */}
           <div className="opacity-0 animate-fade-in-up animate-delay-400 mb-2">
             <p className="text-[11px] tracking-[8px] text-gray-3">GLOBAL STREET CULTURE</p>
           </div>
 
-          {/* Countries */}
           <div className="opacity-0 animate-fade-in-up animate-delay-500 mb-10">
             <p className="text-[10px] tracking-[4px] text-gold-dark/70">
-              USA · JAPAN · ARGENTINA · MOROCCO · ET PLUS
+              MAROC · FRANCE · ET PLUS
             </p>
           </div>
 
-          {/* Search */}
           <div className="opacity-0 animate-fade-in-up animate-delay-500 w-full max-w-lg mb-8 relative">
             <div className="flex items-center border border-black-3 bg-black-2/60 backdrop-blur-sm">
               <svg className="ml-4 flex-shrink-0 text-gray-1" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -123,13 +110,12 @@ export default function HomePage() {
             )}
           </div>
 
-          {/* CTA Buttons */}
           <div className="opacity-0 animate-fade-in-up animate-delay-500 flex gap-4 flex-wrap justify-center">
             <Link
               to="/afrique"
               className="px-8 py-3.5 bg-gold text-black-1 text-[9px] tracking-[4px] hover:bg-gold-light transition-colors duration-300"
             >
-              EXPLORER LES CONTINENTS
+              EXPLORER LES VESTES
             </Link>
             <Link
               to="/histoire"
@@ -140,57 +126,77 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
           <div className="w-px h-12 bg-gradient-to-b from-gold to-transparent" />
           <span className="text-[7px] tracking-[4px] text-gold-dark">SCROLL</span>
         </div>
       </section>
 
-      {/* TICKER */}
       <Ticker />
 
-      {/* AVAILABLE COUNTRIES */}
+      {/* JACKET COLLECTION */}
       <section className="py-24 px-8 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-12">
-          <OryginStar size={16} />
-          <span className="text-[9px] tracking-[5px] text-gold-dark">PAYS DISPONIBLES</span>
-        </div>
+        <Reveal3D>
+          <div className="flex items-center gap-4 mb-4">
+            <OryginStar size={16} />
+            <span className="text-[9px] tracking-[5px] text-gold-dark">UNE VESTE PAR PAYS</span>
+          </div>
+        </Reveal3D>
+        <Reveal3D delay={0.1}>
+          <h2 className="font-cormorant italic text-4xl md:text-5xl text-white mb-12 max-w-2xl">
+            Chaque pays, une veste. Chaque veste, une histoire.
+          </h2>
+        </Reveal3D>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {AVAILABLE_COUNTRIES.map((country, i) => (
-            <Reveal3D key={country.code} delay={i * 0.12} rotateX={20} translateY={60}>
-              <Link to={`/pays/${country.code.toLowerCase()}`} className="block">
-                <TiltCard3D intensity={14} className="relative group overflow-hidden aspect-[3/4] block shadow3d">
-                  {country.heroImage && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {AVAILABLE_COUNTRIES.map((country, i) => {
+            const jacket = PRODUCTS_BY_COUNTRY[country.code]?.[0];
+            if (!jacket) return null;
+            return (
+              <Reveal3D key={country.code} delay={i * 0.15} rotateX={20} translateY={60}>
+                <Link to={`/produit/${jacket.id}`} className="block group">
+                  <TiltCard3D intensity={12} className="relative overflow-hidden aspect-[3/4] block shadow3d">
                     <img
-                      src={country.heroImage}
-                      alt={country.name}
+                      src={jacket.images[0]}
+                      alt={jacket.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      style={{ filter: 'brightness(1.05) contrast(1.05) saturate(1.1)' }}
                     />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/40 to-transparent" />
-                  <div className="absolute inset-0 bg-black-1/20 group-hover:bg-black-1/10 transition-colors duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/40 to-transparent" />
+                    <div className="absolute inset-0 bg-black-1/20 group-hover:bg-black-1/10 transition-colors duration-300" />
 
-                  <div className="absolute top-4 left-4">
-                    <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-2 py-1 bg-black-1/60 backdrop-blur-sm">
-                      ✦ DISPONIBLE
-                    </span>
-                  </div>
+                    <div className="absolute top-4 left-4">
+                      <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-2 py-1 bg-black-1/60 backdrop-blur-sm">
+                        ✦ {country.code} · DISPONIBLE
+                      </span>
+                    </div>
 
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <div className="text-[10px] tracking-[3px] text-gray-3 mb-1">{country.code}</div>
-                    <div className="font-cormorant italic text-2xl text-white group-hover:text-gold transition-colors duration-300 mb-1">
-                      {country.name}
+                    <div className="absolute top-4 right-4">
+                      <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
+                        VESTE
+                      </span>
                     </div>
-                    <div className="text-[9px] tracking-[1px] text-gray-3 italic">
-                      {country.subtitle}
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <div className="text-[10px] tracking-[3px] text-gray-3 mb-1">{country.flag} {country.name}</div>
+                      <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors duration-300 mb-2">
+                        {jacket.name}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-[9px] tracking-[1px] text-gray-3 italic">{country.subtitle}</div>
+                        <div
+                          className="font-cormorant italic text-xl"
+                          style={{ background: 'linear-gradient(135deg, #c9a84c, #f0e0a0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                        >
+                          {jacket.price} €
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </TiltCard3D>
-              </Link>
-            </Reveal3D>
-          ))}
+                  </TiltCard3D>
+                </Link>
+              </Reveal3D>
+            );
+          })}
         </div>
       </section>
 
@@ -227,28 +233,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* COUNTDOWN */}
-      <Reveal3D>
-        <section className="py-20 px-8 border-t border-black-3 text-center relative overflow-hidden">
-          <Scene3D count={20} className="opacity-50" />
-          <p className="text-[9px] tracking-[6px] text-gray-1 mb-10 relative z-10">PROCHAIN DROP DANS</p>
-          <div className="relative z-10"><Countdown targetDate={DROP_TARGET} /></div>
-        </section>
-      </Reveal3D>
-
-      {/* EMAIL SIGNUP */}
-      <Reveal3D>
-        <section className="py-20 px-8 border-t border-black-3 text-center">
-          <OryginStar size={32} className="mx-auto mb-6 opacity-60" />
-          <h2 className="font-cormorant italic text-4xl text-white mb-3">
-            Rejoindre le mouvement
-          </h2>
-          <p className="text-[10px] tracking-[3px] text-gray-1 mb-8">
-            SOYEZ NOTIFIÉ EN AVANT-PREMIÈRE
-          </p>
-          <EmailSignup />
-        </section>
-      </Reveal3D>
+      {/* REVIEWS SECTION */}
+      <section className="py-20 px-8 max-w-7xl mx-auto border-t border-black-3">
+        <Reviews productId="all" productName="Orygin" />
+      </section>
 
       {/* MANIFESTO QUOTE */}
       <Reveal3D rotateX={10} translateY={50}>
@@ -266,43 +254,5 @@ export default function HomePage() {
         </section>
       </Reveal3D>
     </div>
-  );
-}
-
-function EmailSignup() {
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setSent(true);
-  };
-
-  if (sent) {
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <OryginStar size={24} className="text-gold" />
-        <p className="text-[10px] tracking-[4px] text-gold">INSCRIT — À BIENTÔT</p>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={submit} className="flex max-w-md mx-auto gap-0">
-      <input
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        placeholder="votre@email.com"
-        required
-        className="flex-1 bg-black-2 border border-black-3 border-r-0 px-5 py-3.5 text-sm text-white placeholder-gray-1 outline-none font-montserrat tracking-wide"
-      />
-      <button
-        type="submit"
-        className="bg-gold text-black-1 px-6 py-3.5 text-[9px] tracking-[4px] hover:bg-gold-light transition-colors duration-300 flex-shrink-0"
-      >
-        S'INSCRIRE
-      </button>
-    </form>
   );
 }

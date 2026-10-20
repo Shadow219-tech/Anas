@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
 import Scene3D from '../components/Scene3D';
+import PaymentSuccess from '../components/PaymentSuccess';
 
 interface Order {
   id: string;
@@ -23,9 +24,10 @@ export default function ConfirmationPage() {
   const { orderNumber } = useParams<{ orderNumber: string }>();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAnimation, setShowAnimation] = useState(true);
   const { closeCart } = useCart();
 
-  useEffect(() => { closeCart(); }, []);
+  useEffect(() => { closeCart(); }, [closeCart]);
 
   useEffect(() => {
     if (!orderNumber) return;
@@ -36,6 +38,10 @@ export default function ConfirmationPage() {
       .maybeSingle()
       .then(({ data }) => { setOrder(data); setLoading(false); });
   }, [orderNumber]);
+
+  if (showAnimation) {
+    return <PaymentSuccess onDone={() => setShowAnimation(false)} />;
+  }
 
   if (loading) {
     return (
@@ -53,14 +59,12 @@ export default function ConfirmationPage() {
       className="min-h-screen pt-16 relative page3d-in"
       style={{ background: 'radial-gradient(ellipse at top, #0d0a04 0%, #080808 50%)' }}
     >
-      {/* Top glow */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[400px] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%)' }}
       />
 
       <div className="relative z-10 max-w-2xl mx-auto px-8 py-20 text-center">
-        {/* Animated star + checkmark */}
         <div className="relative inline-flex items-center justify-center mb-10">
           <OryginStar size={100} className="opacity-20 animate-pulse-star" />
           <div
@@ -74,10 +78,7 @@ export default function ConfirmationPage() {
           </div>
         </div>
 
-        <p
-          className="text-[9px] tracking-[7px] mb-4"
-          style={{ color: '#a07830' }}
-        >
+        <p className="text-[9px] tracking-[7px] mb-4" style={{ color: '#a07830' }}>
           ✦ COMMANDE CONFIRMÉE
         </p>
 
@@ -96,17 +97,21 @@ export default function ConfirmationPage() {
 
         {order ? (
           <>
-            <p
-              className="font-cormorant italic text-2xl mb-2"
-              style={{ color: 'rgba(255,255,255,0.6)' }}
-            >
+            <p className="font-cormorant italic text-2xl mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
               {order.customer_name}
             </p>
             <p className="text-[10px] tracking-[4px] text-gray-1 mb-3">{order.order_number}</p>
-            <p className="text-sm text-gray-3 mb-16">
-              Confirmation envoyée à{' '}
-              <span className="text-white">{order.customer_email}</span>
+            <p className="text-sm text-gray-3 mb-8">
+              Confirmation envoyée à <span className="text-white">{order.customer_email}</span>
             </p>
+
+            {/* Track order link */}
+            <Link
+              to="/suivre"
+              className="inline-flex items-center gap-2 text-[9px] tracking-[4px] text-gold border border-gold-dark/40 px-6 py-3 hover:bg-gold-dark/10 transition-colors mb-12"
+            >
+              SUIVRE MA COMMANDE →
+            </Link>
 
             {/* Order summary */}
             <div
@@ -151,11 +156,7 @@ export default function ConfirmationPage() {
               </div>
             </div>
 
-            {/* Delivery address */}
-            <div
-              className="text-left border border-black-3 px-6 py-5 mb-14"
-              style={{ background: 'rgba(13,13,13,0.6)' }}
-            >
+            <div className="text-left border border-black-3 px-6 py-5 mb-14" style={{ background: 'rgba(13,13,13,0.6)' }}>
               <p className="text-[8px] tracking-[4px] text-gold-dark mb-4">LIVRAISON À</p>
               <p className="text-sm text-gray-3 leading-relaxed">
                 {order.customer_name}<br />
@@ -171,7 +172,6 @@ export default function ConfirmationPage() {
           </p>
         )}
 
-        {/* CTA */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/"
@@ -186,7 +186,6 @@ export default function ConfirmationPage() {
           </Link>
         </div>
 
-        {/* Manifesto */}
         <div className="mt-20 pt-10 border-t border-black-3">
           <OryginStar size={24} className="mx-auto mb-4 opacity-30 animate-shimmer" />
           <p className="font-cormorant italic text-gray-3 text-xl">
