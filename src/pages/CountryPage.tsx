@@ -1,101 +1,29 @@
-import { useState, useRef } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Check } from 'lucide-react';
 import { COUNTRIES, PRODUCTS_BY_COUNTRY } from '../data/countries';
-import type { Product } from '../data/countries';
 import OryginStar from '../components/OryginStar';
+import Scene3D from '../components/Scene3D';
 import TiltCard3D from '../components/TiltCard3D';
 import Reveal3D from '../components/Reveal3D';
-import Scene3D from '../components/Scene3D';
+import Reviews from '../components/Reviews';
+import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
 
-type SeasonFilter = 'ete' | 'hiver';
-
-const PRODUCT_TYPE_LABELS: Record<string, string> = {
-  tshirt: 'T-SHIRT',
-  short: 'SHORT',
-  'ensemble-ete': 'ENSEMBLE ÉTÉ',
-  hoodie: 'HOODIE',
-  cargo: 'CARGO',
-  'ensemble-hiver': 'ENSEMBLE HIVER',
+const continentLabel: Record<string, string> = {
+  afrique: 'Afrique', asie: 'Asie', ameriques: 'Amériques',
+  europe: 'Europe', oceanie: 'Océanie',
 };
 
-// ── Product Grid Card ─────────────────────────────────────────────────────────
-function ProductCard({ product }: { product: Product }) {
-  const isUnavailable = product.availability === 'unavailable';
-
-  return (
-    <Link
-      to={`/produit/${product.id}`}
-      className={`group block transition-all duration-300 ${isUnavailable ? 'opacity-50' : ''}`}
-    >
-      <TiltCard3D intensity={10} className="relative overflow-hidden aspect-[3/4] bg-black-3 mb-4 shadow3d">
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-          style={{
-            filter: isUnavailable
-              ? 'grayscale(1) brightness(0.5)'
-              : 'brightness(1.05) contrast(1.05) saturate(1.12)',
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black-1/60 via-transparent to-transparent" />
-
-        {/* Badge */}
-        <div className="absolute top-3 left-3">
-          <span className="text-[7px] tracking-[3px] bg-black-1/90 text-gold-dark px-2.5 py-1 backdrop-blur-sm border border-black-3/60">
-            {PRODUCT_TYPE_LABELS[product.type]}
-          </span>
-        </div>
-
-        {isUnavailable && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-black-1/70 backdrop-blur-sm px-4 py-2 flex items-center gap-2">
-              <Lock size={10} className="text-gray-2" />
-              <span className="text-[8px] tracking-[3px] text-gray-2">BIENTÔT</span>
-            </div>
-          </div>
-        )}
-
-        {/* Quick view hint */}
-        {!isUnavailable && (
-          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 transition-all duration-300 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
-            <span className="text-[8px] tracking-[4px] text-white bg-black-1/80 backdrop-blur-sm px-4 py-2 border border-black-3">
-              VOIR LE PRODUIT
-            </span>
-          </div>
-        )}
-      </TiltCard3D>
-
-      {/* Info */}
-      <div>
-        <div className="font-cormorant italic text-lg text-white leading-tight mb-0.5 group-hover:text-gold transition-colors duration-300">
-          {product.name}
-        </div>
-        <div
-          className="font-cormorant italic text-base"
-          style={{ background: 'linear-gradient(135deg, #c9a84c, #f0e0a0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-        >
-          {product.price} €
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-// ── Main Country Page ─────────────────────────────────────────────────────────
 export default function CountryPage() {
   const { code } = useParams<{ code: string }>();
-  const [season, setSeason] = useState<SeasonFilter>('ete');
-  const productsRef = useRef<HTMLDivElement>(null);
+  const { addItem, openCart } = useCart();
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => { window.scrollTo(0, 0); }, [code]);
 
   const country = COUNTRIES.find(c => c.code.toLowerCase() === code?.toLowerCase());
   if (!country) return <Navigate to="/" replace />;
-
-  const continentLabel: Record<string, string> = {
-    afrique: 'Afrique', asie: 'Asie', ameriques: 'Amériques',
-    europe: 'Europe', oceanie: 'Océanie',
-  };
 
   if (country.status === 'soon') {
     return (
@@ -115,32 +43,30 @@ export default function CountryPage() {
     );
   }
 
-  const allProducts = PRODUCTS_BY_COUNTRY[country.code] ?? [];
-  const filtered = allProducts.filter(p => p.season === season);
-  const eteCount = allProducts.filter(p => p.season === 'ete' && p.availability === 'available').length;
-  const hiverCount = allProducts.filter(p => p.season === 'hiver' && p.availability === 'available').length;
+  const jacket = PRODUCTS_BY_COUNTRY[country.code]?.[0];
+  if (!jacket) return <Navigate to="/" replace />;
 
-  const scrollToProducts = () => {
-    productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const handleAdd = () => {
+    if (!selectedSize) return;
+    addItem(jacket, selectedSize, country.code, country.name);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2500);
   };
 
   return (
     <div className="min-h-screen bg-black-1 pt-16 page3d-in">
-      {/* HERO — full screen */}
+      {/* HERO */}
       <div
-        className="relative h-[100svh] flex flex-col items-center justify-center overflow-hidden"
+        className="relative h-[80svh] flex flex-col items-center justify-center overflow-hidden"
         style={country.heroImage ? {
           backgroundImage: `url(${country.heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 30%',
         } : { background: '#0d0d0d' }}
       >
-        {/* Layered overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-black-1/30 via-black-1/50 to-black-1" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black-1/80 via-transparent to-transparent" />
         <Scene3D count={35} className="opacity-40" />
 
-        {/* Breadcrumb */}
         <div className="absolute top-8 left-8 flex items-center gap-2 z-10">
           <Link to="/" className="text-[8px] tracking-[3px] text-gray-1/70 hover:text-gold transition-colors">ACCUEIL</Link>
           <span className="text-gray-2/50 text-[8px]">·</span>
@@ -151,13 +77,12 @@ export default function CountryPage() {
           <span className="text-[8px] tracking-[3px] text-gold/80">{country.name.toUpperCase()}</span>
         </div>
 
-        {/* Center content */}
         <div className="relative z-10 text-center px-8">
           <p className="text-[9px] tracking-[6px] text-gold-dark mb-4 animate-fade-in-up">{country.code}</p>
           <h1
             className="font-cormorant italic leading-none mb-4 animate-fade-in-up animate-delay-100"
             style={{
-              fontSize: 'clamp(72px, 14vw, 160px)',
+              fontSize: 'clamp(60px, 12vw, 140px)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, #c9a84c 40%, #f0e0a0 65%, rgba(255,255,255,0.8) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -169,65 +94,142 @@ export default function CountryPage() {
             {country.subtitle}
           </p>
         </div>
-
-        {/* Scroll CTA */}
-        <button
-          onClick={scrollToProducts}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10 group"
-        >
-          <span className="text-[8px] tracking-[5px] text-gold-dark group-hover:text-gold transition-colors">
-            ✦ LA COLLECTION
-          </span>
-          <div className="w-px h-10 bg-gradient-to-b from-gold-dark to-transparent animate-shimmer" />
-        </button>
       </div>
 
-      {/* COLLECTION SECTION */}
-      <div ref={productsRef} className="max-w-7xl mx-auto px-8 pt-20 pb-24">
-        {/* Season tabs */}
-        <div className="flex justify-center mb-16">
-          <div className="flex border border-black-3 relative overflow-hidden">
-            {/* Animated active bg */}
-            <div
-              className="absolute top-0 bottom-0 w-1/2 bg-gold/10 border-r border-gold-dark/30 transition-all duration-300"
-              style={{ left: season === 'ete' ? '0%' : '50%' }}
-            />
-            {(['ete', 'hiver'] as const).map(s => (
-              <button
-                key={s}
-                onClick={() => setSeason(s)}
-                className={`relative z-10 px-12 py-4 text-[9px] tracking-[5px] transition-all duration-300 ${
-                  season === s ? 'text-gold' : 'text-gray-2 hover:text-white'
-                }`}
+      {/* JACKET SECTION */}
+      <div className="max-w-7xl mx-auto px-8 py-20">
+        <Reveal3D>
+          <div className="flex items-center gap-4 mb-12">
+            <OryginStar size={16} />
+            <span className="text-[9px] tracking-[5px] text-gold-dark">LA VESTE — {country.code}</span>
+          </div>
+        </Reveal3D>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+          {/* Left — image */}
+          <Reveal3D delay={0.1} rotateX={15} translateY={50}>
+            <TiltCard3D intensity={10} className="relative overflow-hidden aspect-[3/4] bg-black-3 shadow3d">
+              <img
+                src={jacket.images[0]}
+                alt={jacket.name}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ filter: 'brightness(1.05) contrast(1.05) saturate(1.1)' }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black-1/60 via-transparent to-transparent" />
+              <div className="absolute top-4 left-4">
+                <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
+                  VESTE
+                </span>
+              </div>
+            </TiltCard3D>
+          </Reveal3D>
+
+          {/* Right — info */}
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2 mb-6">
+              <OryginStar size={14} />
+              <span className="text-[8px] tracking-[4px] text-gold-dark">
+                {country.name.toUpperCase()} · DROP 001
+              </span>
+            </div>
+
+            <h2 className="font-cormorant italic text-4xl md:text-5xl text-white leading-tight mb-4">
+              {jacket.name}
+            </h2>
+
+            <div className="flex items-baseline gap-3 mb-8">
+              <span
+                className="font-cormorant italic text-3xl"
+                style={{ background: 'linear-gradient(135deg, #ede0b8 0%, #c9a84c 50%, #f0e0a0 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
               >
-                {s === 'ete' ? 'ÉTÉ' : 'HIVER'}
-                {s === 'ete' && eteCount > 0 && (
-                  <span className="ml-2 text-[7px] text-gold-dark">✦</span>
-                )}
-                {s === 'hiver' && hiverCount === 0 && (
-                  <span className="ml-2 text-[7px] text-gray-2">—</span>
-                )}
-              </button>
-            ))}
+                {jacket.price} €
+              </span>
+              <span className="text-[8px] tracking-[3px] text-gray-2">TTC · LIVRAISON OFFERTE</span>
+            </div>
+
+            <p className="text-sm text-gray-3 leading-loose mb-6 border-t border-black-3 pt-6">
+              {jacket.description}
+            </p>
+
+            <div className="mb-6">
+              <p className="text-[8px] tracking-[4px] text-gold-dark mb-2">HISTOIRE</p>
+              <p className="text-sm text-gray-3 leading-relaxed italic">{jacket.story}</p>
+            </div>
+
+            <div className="mb-8">
+              <p className="text-[8px] tracking-[4px] text-gold-dark mb-2">MATIÈRE</p>
+              <p className="text-[10px] tracking-[2px] text-gray-2">{jacket.fabric}</p>
+            </div>
+
+            {/* Stock indicator */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-1 bg-black-3 overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-gold-dark to-gold" style={{ width: `${Math.min((jacket.stock / 50) * 100, 100)}%` }} />
+              </div>
+              <span className="text-[8px] tracking-[2px] text-gray-2">{jacket.stock} EN STOCK</span>
+            </div>
+
+            {/* Size selector */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[9px] tracking-[4px] text-gold-dark">TAILLE</span>
+              </div>
+              <div className="grid grid-cols-6 gap-2">
+                {jacket.sizes.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`py-3 text-[9px] tracking-[1px] border transition-all duration-200 ${
+                      selectedSize === size
+                        ? 'border-gold bg-gold/10 text-gold'
+                        : 'border-black-3 text-gray-3 hover:border-gold-dark/50 hover:text-white'
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Add to cart */}
+            <button
+              onClick={handleAdd}
+              className={`w-full py-4 text-[9px] tracking-[5px] transition-all duration-300 flex items-center justify-center gap-3 ${
+                added
+                  ? 'bg-gold-dark text-white'
+                  : selectedSize
+                  ? 'bg-gold text-black-1 hover:bg-gold-light'
+                  : 'bg-black-3 text-gray-2 cursor-not-allowed'
+              }`}
+              style={selectedSize && !added ? { boxShadow: '0 0 30px rgba(201,168,76,0.2)' } : {}}
+            >
+              {added ? (
+                <><Check size={14} />AJOUTÉ AU PANIER</>
+              ) : (
+                <><ShoppingBag size={14} />{selectedSize ? 'AJOUTER AU PANIER' : 'CHOISIR UNE TAILLE'}</>
+              )}
+            </button>
+
+            <div className="flex justify-between pt-4 border-t border-black-3 mt-6">
+              {['PIÈCE LIMITÉE', 'LIVRAISON OFFERTE', 'RETOUR GRATUIT'].map(t => (
+                <span key={t} className="text-[7px] tracking-[2px] text-gray-2 text-center">{t}</span>
+              ))}
+            </div>
+
+            <Link
+              to={`/${country.continent}`}
+              className="mt-8 flex items-center gap-2 text-[9px] tracking-[3px] text-gray-3 hover:text-gold transition-colors"
+            >
+              <ArrowLeft size={12} />
+              RETOUR À {(continentLabel[country.continent] ?? country.continent).toUpperCase()}
+            </Link>
           </div>
         </div>
 
-        {/* Products grid */}
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-            {filtered.map((product, i) => (
-              <Reveal3D key={product.id} delay={i * 0.1} rotateX={15} translateY={50}>
-                <ProductCard product={product} />
-              </Reveal3D>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-24">
-            <OryginStar size={40} className="mx-auto mb-6 opacity-20 animate-float" />
-            <p className="font-cormorant italic text-2xl text-gray-3 mb-2">Collection Hiver</p>
-            <p className="text-[9px] tracking-[4px] text-gray-2">DROP 002 — BIENTÔT</p>
-          </div>
-        )}
+        {/* Reviews */}
+        <div className="mt-20">
+          <Reviews productId={jacket.id} productName={jacket.name} />
+        </div>
       </div>
     </div>
   );

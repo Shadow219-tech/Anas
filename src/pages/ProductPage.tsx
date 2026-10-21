@@ -1,18 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
-import { Lock, ChevronLeft, ChevronRight, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingBag, ArrowLeft, Check } from 'lucide-react';
 import { COUNTRIES, findProductById } from '../data/countries';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
-
-const PRODUCT_TYPE_LABELS: Record<string, string> = {
-  tshirt: 'T-SHIRT',
-  short: 'SHORT',
-  'ensemble-ete': 'ENSEMBLE ÉTÉ',
-  hoodie: 'HOODIE',
-  cargo: 'CARGO',
-  'ensemble-hiver': 'ENSEMBLE HIVER',
-};
+import TiltCard3D from '../components/TiltCard3D';
+import Reveal3D from '../components/Reveal3D';
+import Reviews from '../components/Reviews';
 
 const continentLabel: Record<string, string> = {
   afrique: 'Afrique', asie: 'Asie', ameriques: 'Amériques',
@@ -31,16 +25,16 @@ export default function ProductPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setActiveImg(0);
   }, [slug]);
 
   if (!found) return <Navigate to="/" replace />;
 
   const { product, countryCode, countryName } = found;
   const country = COUNTRIES.find(c => c.code === countryCode);
-  const isUnavailable = product.availability === 'unavailable';
 
   const handleAdd = () => {
-    if (!selectedSize || isUnavailable) return;
+    if (!selectedSize) return;
     addItem(product, selectedSize, countryCode, countryName);
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);
@@ -53,7 +47,6 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-black-1 pt-16">
-      {/* Top bar — breadcrumb + back */}
       <div className="border-b border-black-3">
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-[8px] tracking-[3px]">
@@ -81,12 +74,10 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Main content — full width, two columns */}
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
           {/* Left — image gallery */}
           <div className="flex flex-col gap-4">
-            {/* Main image */}
             <div className="relative aspect-[3/4] overflow-hidden bg-black-3">
               {product.images.map((img, i) => (
                 <img
@@ -96,16 +87,11 @@ export default function ProductPage() {
                   className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
                     i === activeImg ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
                   }`}
-                  style={{
-                    filter: isUnavailable
-                      ? 'grayscale(1) brightness(0.6)'
-                      : 'brightness(1.05) contrast(1.05) saturate(1.1)',
-                  }}
+                  style={{ filter: 'brightness(1.05) contrast(1.05) saturate(1.1)' }}
                 />
               ))}
               <div className="absolute inset-0 bg-gradient-to-t from-black-1/20 to-transparent pointer-events-none" />
 
-              {/* Nav arrows */}
               {product.images.length > 1 && (
                 <>
                   <button
@@ -123,15 +109,13 @@ export default function ProductPage() {
                 </>
               )}
 
-              {/* Type badge */}
               <div className="absolute top-4 left-4">
                 <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
-                  {PRODUCT_TYPE_LABELS[product.type]}
+                  VESTE
                 </span>
               </div>
             </div>
 
-            {/* Thumbnails */}
             {product.images.length > 1 && (
               <div className="flex gap-3">
                 {product.images.map((img, i) => (
@@ -151,7 +135,6 @@ export default function ProductPage() {
 
           {/* Right — product info */}
           <div className="flex flex-col">
-            {/* Country / collection */}
             <div className="flex items-center gap-2 mb-6">
               <OryginStar size={14} />
               <span className="text-[8px] tracking-[4px] text-gold-dark">
@@ -163,7 +146,6 @@ export default function ProductPage() {
               {product.name}
             </h1>
 
-            {/* Price */}
             <div className="flex items-baseline gap-3 mb-8">
               <span
                 className="font-cormorant italic text-3xl"
@@ -174,78 +156,75 @@ export default function ProductPage() {
               <span className="text-[8px] tracking-[3px] text-gray-2">TTC · LIVRAISON OFFERTE</span>
             </div>
 
-            {/* Description */}
-            {product.description && (
-              <p className="text-sm text-gray-3 leading-loose mb-8 border-t border-black-3 pt-6">
-                {product.description}
-              </p>
-            )}
+            <p className="text-sm text-gray-3 leading-loose mb-6 border-t border-black-3 pt-6">
+              {product.description}
+            </p>
 
-            {isUnavailable ? (
-              <div className="mt-auto">
-                <div className="flex items-center gap-3 border border-black-3 p-6 text-center justify-center">
-                  <Lock size={16} className="text-gray-2" />
-                  <span className="text-[9px] tracking-[4px] text-gray-2">
-                    {product.unavailableReason ?? 'BIENTÔT DISPONIBLE'}
-                  </span>
-                </div>
+            <div className="mb-6">
+              <p className="text-[8px] tracking-[4px] text-gold-dark mb-2">HISTOIRE</p>
+              <p className="text-sm text-gray-3 leading-relaxed italic">{product.story}</p>
+            </div>
+
+            <div className="mb-8">
+              <p className="text-[8px] tracking-[4px] text-gold-dark mb-2">MATIÈRE</p>
+              <p className="text-[10px] tracking-[2px] text-gray-2">{product.fabric}</p>
+            </div>
+
+            {/* Stock indicator */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-1 bg-black-3 overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-gold-dark to-gold" style={{ width: `${Math.min((product.stock / 50) * 100, 100)}%` }} />
               </div>
-            ) : (
-              <div className="mt-auto space-y-6">
-                {/* Size selector */}
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-[9px] tracking-[4px] text-gold-dark">TAILLE</span>
-                    <button className="text-[8px] tracking-[2px] text-gray-2 underline underline-offset-2 hover:text-white transition-colors">
-                      Guide des tailles
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-6 gap-2">
-                    {product.sizes.map(size => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`py-3 text-[9px] tracking-[1px] border transition-all duration-200 ${
-                          selectedSize === size
-                            ? 'border-gold bg-gold/10 text-gold'
-                            : 'border-black-3 text-gray-3 hover:border-gold-dark/50 hover:text-white'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
+              <span className="text-[8px] tracking-[2px] text-gray-2">{product.stock} EN STOCK</span>
+            </div>
+
+            <div className="mt-auto space-y-6">
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-[9px] tracking-[4px] text-gold-dark">TAILLE</span>
                 </div>
-
-                {/* Add to cart */}
-                <button
-                  onClick={handleAdd}
-                  className={`w-full py-4 text-[9px] tracking-[5px] transition-all duration-300 flex items-center justify-center gap-3 ${
-                    added
-                      ? 'bg-gold-dark text-white'
-                      : selectedSize
-                      ? 'bg-gold text-black-1 hover:bg-gold-light'
-                      : 'bg-black-3 text-gray-2 cursor-not-allowed'
-                  }`}
-                  style={selectedSize && !added ? { boxShadow: '0 0 30px rgba(201,168,76,0.2)' } : {}}
-                >
-                  {added ? (
-                    <>✦ AJOUTÉ AU PANIER</>
-                  ) : (
-                    <><ShoppingBag size={14} />{selectedSize ? 'AJOUTER AU PANIER' : 'CHOISIR UNE TAILLE'}</>
-                  )}
-                </button>
-
-                {/* Trust badges */}
-                <div className="flex justify-between pt-4 border-t border-black-3">
-                  {['PIÈCE LIMITÉE', 'LIVRAISON OFFERTE', 'RETOUR GRATUIT'].map(t => (
-                    <span key={t} className="text-[7px] tracking-[2px] text-gray-2 text-center">{t}</span>
+                <div className="grid grid-cols-6 gap-2">
+                  {product.sizes.map(size => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`py-3 text-[9px] tracking-[1px] border transition-all duration-200 ${
+                        selectedSize === size
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-black-3 text-gray-3 hover:border-gold-dark/50 hover:text-white'
+                      }`}
+                    >
+                      {size}
+                    </button>
                   ))}
                 </div>
               </div>
-            )}
 
-            {/* Back to country */}
+              <button
+                onClick={handleAdd}
+                className={`w-full py-4 text-[9px] tracking-[5px] transition-all duration-300 flex items-center justify-center gap-3 ${
+                  added
+                    ? 'bg-gold-dark text-white'
+                    : selectedSize
+                    ? 'bg-gold text-black-1 hover:bg-gold-light'
+                    : 'bg-black-3 text-gray-2 cursor-not-allowed'
+                }`}
+                style={selectedSize && !added ? { boxShadow: '0 0 30px rgba(201,168,76,0.2)' } : {}}
+              >
+                {added ? (
+                  <><Check size={14} />AJOUTÉ AU PANIER</>
+                ) : (
+                  <><ShoppingBag size={14} />{selectedSize ? 'AJOUTER AU PANIER' : 'CHOISIR UNE TAILLE'}</>
+                )}
+              </button>
+
+              <div className="flex justify-between pt-4 border-t border-black-3">
+                {['PIÈCE LIMITÉE', 'LIVRAISON OFFERTE', 'RETOUR GRATUIT'].map(t => (
+                  <span key={t} className="text-[7px] tracking-[2px] text-gray-2 text-center">{t}</span>
+                ))}
+              </div>
+            </div>
+
             <Link
               to={backLink}
               className="mt-8 flex items-center gap-2 text-[9px] tracking-[3px] text-gray-3 hover:text-gold transition-colors"
@@ -254,6 +233,11 @@ export default function ProductPage() {
               RETOUR À {countryName.toUpperCase()}
             </Link>
           </div>
+        </div>
+
+        {/* Reviews */}
+        <div className="mt-20">
+          <Reviews productId={product.id} productName={product.name} />
         </div>
       </div>
     </div>
