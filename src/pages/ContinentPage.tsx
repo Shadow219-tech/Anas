@@ -1,176 +1,64 @@
-import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { CONTINENTS, COUNTRIES, PRODUCTS_BY_COUNTRY } from '../data/countries';
 import OryginStar from '../components/OryginStar';
-import Countdown from '../components/Countdown';
 import Scene3D from '../components/Scene3D';
 import TiltCard3D from '../components/TiltCard3D';
 import Reveal3D from '../components/Reveal3D';
 
-const DROP_DATES: Record<string, Date> = {
-  ameriques: new Date('2026-12-01T00:00:00'),
-  asie: new Date('2026-09-15T00:00:00'),
-  oceanie: new Date('2027-03-01T00:00:00'),
-};
-
 export default function ContinentPage() {
   const { continent: slug } = useParams<{ continent: string }>();
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
+  const continent = CONTINENTS.find(item => item.id === slug);
 
-  const continent = CONTINENTS.find(c => c.id === slug);
   if (!continent) return <Navigate to="/" replace />;
 
-  const countries = COUNTRIES.filter(c => c.continent === slug);
-  const available = countries.filter(c => c.status === 'available');
-  const coming = countries.filter(c => c.status === 'soon');
-  const isSoon = continent.status === 'soon';
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setSent(true);
-  };
-
-  if (isSoon) {
-    return (
-      <div className="min-h-screen bg-black-1 pt-16 page3d-in">
-        <Scene3D count={40} className="opacity-60" />
-        <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-8 relative z-10">
-          <div className="animate-float mb-8">
-            <OryginStar size={100} animated />
-          </div>
-
-          <p className="text-[9px] tracking-[6px] text-gold-dark mb-4">
-            {continent.dropLabel} —
-          </p>
-          <h1 className="font-cormorant italic text-7xl md:text-9xl text-gold-gradient mb-4">
-            {continent.name}
-          </h1>
-          <p className="text-[10px] tracking-[5px] text-gray-1 mb-16">
-            {continent.countryCount} PAYS · BIENTÔT DISPONIBLE
-          </p>
-
-          {DROP_DATES[slug!] && (
-            <div className="mb-16">
-              <p className="text-[9px] tracking-[5px] text-gray-1 mb-6">LE DROP ARRIVE DANS</p>
-              <Countdown targetDate={DROP_DATES[slug!]} />
-            </div>
-          )}
-
-          {countries.length > 0 && (
-            <div className="mb-16 max-w-2xl">
-              <p className="text-[9px] tracking-[4px] text-gray-1 mb-6">PAYS À VENIR</p>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {countries.map((c, i) => (
-                  <Reveal3D key={c.code} delay={i * 0.06} rotateX={12} translateY={20}>
-                    <span className="flex items-center gap-2 border border-black-3 px-4 py-2 lift3d">
-                      <span>{c.flag}</span>
-                      <span className="font-cormorant italic text-sm text-gray-3">{c.name}</span>
-                    </span>
-                  </Reveal3D>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!sent ? (
-            <form onSubmit={submit} className="flex w-full max-w-md">
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="votre@email.com"
-                required
-                className="flex-1 bg-black-2 border border-black-3 border-r-0 px-5 py-3.5 text-sm text-white placeholder-gray-1 outline-none"
-              />
-              <button
-                type="submit"
-                className="bg-gold text-black-1 px-6 py-3.5 text-[9px] tracking-[4px] hover:bg-gold-light transition-colors"
-              >
-                ÊTRE NOTIFIÉ
-              </button>
-            </form>
-          ) : (
-            <div className="flex items-center gap-3">
-              <OryginStar size={20} />
-              <span className="text-[10px] tracking-[4px] text-gold">INSCRIT — À BIENTÔT</span>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const countries = COUNTRIES.filter(country => country.continent === continent.id);
+  const available = countries.filter(country => country.status === 'available');
+  const coming = countries.filter(country => country.status === 'soon');
 
   return (
     <div className="min-h-screen bg-black-1 pt-16 page3d-in">
-      {/* Header */}
-      <div className="py-20 px-8 text-center border-b border-black-3 relative overflow-hidden">
-        <Scene3D count={25} className="opacity-50" />
+      <header className="relative overflow-hidden border-b border-black-3 py-20 px-8 text-center">
+        <Scene3D count={28} className="opacity-40" />
         <div className="absolute top-8 left-1/2 -translate-x-1/2 opacity-5">
           <OryginStar size={300} />
         </div>
         <div className="relative z-10">
-          <p className="text-[9px] tracking-[5px] text-gold-dark mb-4">
-            {continent.emoji} · ORYGIN
-          </p>
-          <h1 className="font-cormorant italic text-8xl md:text-[120px] text-gold-gradient leading-none mb-4">
+          <p className="text-[9px] tracking-[5px] text-gold-dark mb-4">{continent.emoji} · ORYGIN</p>
+          <h1 className="font-cormorant italic text-7xl md:text-[120px] text-gold-gradient leading-none mb-5">
             {continent.name}
           </h1>
           <p className="text-[10px] tracking-[5px] text-gray-1">
-            {continent.countryCount} PAYS · UNE VESTE PAR PAYS
+            {continent.countryCount > 0 ? `${continent.countryCount} PAYS · ` : ''}UNE ORIGINE, UN STYLE
           </p>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-8 py-16">
-        {/* Available countries with their jacket */}
+      <main className="max-w-7xl mx-auto px-8 py-16">
         {available.length > 0 && (
-          <div className="mb-16">
+          <section className="mb-20">
             <Reveal3D>
-              <div className="flex items-center gap-4 mb-8">
-                <OryginStar size={14} />
-                <span className="text-[9px] tracking-[5px] text-gold">DISPONIBLE</span>
+              <div className="flex items-center gap-4 mb-10">
+                <OryginStar size={15} />
+                <span className="text-[9px] tracking-[5px] text-gold-dark">PAYS DISPONIBLES</span>
               </div>
             </Reveal3D>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {available.map((country, i) => {
-                const jacket = PRODUCTS_BY_COUNTRY[country.code]?.[0];
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {available.map((country, index) => {
+                const product = PRODUCTS_BY_COUNTRY[country.code]?.[0];
+                const image = country.heroImage ?? product?.images[0];
                 return (
-                  <Reveal3D key={country.code} delay={i * 0.12} rotateX={18} translateY={50}>
-                    <Link to={jacket ? `/produit/${jacket.id}` : `/pays/${country.code.toLowerCase()}`} className="block">
-                      <TiltCard3D intensity={12} className="group relative border border-black-3 hover:border-gold-dark transition-colors duration-300 overflow-hidden h-full">
-                        {jacket && (
-                          <div className="relative aspect-[4/5] overflow-hidden">
-                            <img src={jacket.images[0]} alt={jacket.name}
-                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              style={{ filter: 'brightness(1.05) contrast(1.05)' }} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/30 to-transparent" />
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <div className="text-[10px] tracking-[4px] text-gray-2 mb-1">{country.code}</div>
-                              <div className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">
-                                {jacket?.name ?? country.name}
-                              </div>
-                              <div className="text-[9px] tracking-[1px] text-gray-1 italic mt-1">
-                                {country.flag} {country.name} · {country.subtitle}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between pt-4 border-t border-black-3">
-                            <span className="text-[8px] tracking-[3px] text-gold">✦ DISPONIBLE</span>
-                            {jacket && (
-                              <span className="font-cormorant italic text-lg"
-                                style={{ background: 'linear-gradient(135deg, #c9a84c, #f0e0a0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                {jacket.price} €
-                              </span>
-                            )}
-                            <span className="text-[8px] tracking-[3px] text-gray-1 group-hover:text-gold transition-colors">
-                              VOIR →
-                            </span>
-                          </div>
+                  <Reveal3D key={country.code} delay={index * 0.1} rotateX={14} translateY={45}>
+                    <Link to={`/pays/${country.code.toLowerCase()}`} className="block group">
+                      <TiltCard3D intensity={12} className="relative overflow-hidden aspect-[3/4] shadow3d">
+                        {image && <img src={image} alt={country.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" style={{ filter: 'brightness(0.82) contrast(1.08) saturate(1.08)' }} />}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/30 to-transparent" />
+                        <div className="absolute top-5 left-5">
+                          <span className="text-[8px] tracking-[3px] text-gold border border-gold-dark/50 px-3 py-2 bg-black-1/60 backdrop-blur-sm">✦ DISPONIBLE</span>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                          <p className="text-[9px] tracking-[4px] text-gray-3 mb-2">{country.code}</p>
+                          <h2 className="font-cormorant italic text-3xl text-white group-hover:text-gold transition-colors">{country.name}</h2>
+                          <p className="text-[10px] tracking-[1px] text-gray-3 italic mt-2">{country.subtitle}</p>
                         </div>
                       </TiltCard3D>
                     </Link>
@@ -178,35 +66,46 @@ export default function ContinentPage() {
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Coming soon */}
-        {coming.length > 0 && (
-          <div>
+        {coming.length > 0 ? (
+          <section>
             <Reveal3D>
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4 mb-10">
                 <div className="w-1 h-1 bg-gray-2 rotate-45" />
-                <span className="text-[9px] tracking-[5px] text-gray-2">BIENTÔT</span>
+                <span className="text-[9px] tracking-[5px] text-gray-2">COLLECTIONS À VENIR</span>
               </div>
             </Reveal3D>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {coming.map((country, i) => (
-                <Reveal3D key={country.code} delay={i * 0.05} rotateX={10} translateY={30}>
-                  <div className="border border-black-3/50 p-5 opacity-60 lift3d">
-                    <div className="text-[10px] tracking-[3px] text-gray-2 mb-1">{country.code}</div>
-                    <div className="font-cormorant italic text-xl text-gray-3 mb-1">{country.name}</div>
-                    <div className="text-[8px] tracking-[1px] text-gray-2 italic mb-3">
-                      {country.subtitle}
-                    </div>
-                    <span className="text-[8px] tracking-[3px] text-gray-2">— BIENTÔT</span>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {coming.map((country, index) => (
+                <Reveal3D key={country.code} delay={index * 0.08} rotateX={12} translateY={30}>
+                  <Link to={`/pays/${country.code.toLowerCase()}`} className="block group">
+                    <TiltCard3D intensity={10} className="relative overflow-hidden aspect-[3/4] border border-black-3/70">
+                      {country.heroImage && <img src={country.heroImage} alt={country.name} className="absolute inset-0 w-full h-full object-cover grayscale opacity-35 transition-all duration-700 group-hover:scale-105 group-hover:opacity-50" />}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black-1 via-black-1/65 to-black-1/20" />
+                      <div className="absolute top-5 left-5">
+                        <span className="text-[8px] tracking-[3px] text-gray-2 border border-gray-2/30 px-3 py-2 bg-black-1/60 backdrop-blur-sm">— BIENTÔT</span>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <p className="text-[9px] tracking-[4px] text-gray-2 mb-2">{country.code}</p>
+                        <h2 className="font-cormorant italic text-3xl text-gray-3 group-hover:text-white transition-colors">{country.name}</h2>
+                        <p className="text-[10px] tracking-[1px] text-gray-2 italic mt-2">{country.subtitle}</p>
+                      </div>
+                    </TiltCard3D>
+                  </Link>
                 </Reveal3D>
               ))}
             </div>
+          </section>
+        ) : (
+          <div className="py-20 text-center border-t border-black-3">
+            <OryginStar size={28} className="mx-auto mb-6 opacity-30" />
+            <p className="text-[9px] tracking-[5px] text-gray-2">PROCHAINEMENT</p>
+            <p className="font-cormorant italic text-2xl text-gray-3 mt-3">De nouvelles origines arrivent bientôt.</p>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

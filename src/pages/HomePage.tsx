@@ -48,7 +48,7 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-3xl mx-auto">
           <div className="opacity-0 animate-fade-in-up animate-delay-100 mb-8">
             <span className="inline-flex items-center gap-2 border border-gold-dark/40 px-5 py-2 text-[9px] tracking-[5px] text-gold-dark">
-              ✦ DROP 001 — UNE VESTE PAR PAYS
+              ✦ DROP 001 — UN ENSEMBLE PAR PAYS
             </span>
           </div>
 
@@ -68,7 +68,7 @@ export default function HomePage() {
 
           <div className="opacity-0 animate-fade-in-up animate-delay-500 mb-10">
             <p className="text-[10px] tracking-[4px] text-gold-dark/70">
-              MAROC · FRANCE · ET PLUS
+              MAROC · ÉTATS-UNIS · ET PLUS
             </p>
           </div>
 
@@ -115,7 +115,7 @@ export default function HomePage() {
               to="/afrique"
               className="px-8 py-3.5 bg-gold text-black-1 text-[9px] tracking-[4px] hover:bg-gold-light transition-colors duration-300"
             >
-              EXPLORER LES VESTES
+              EXPLORER LES ENSEMBLES
             </Link>
             <Link
               to="/histoire"
@@ -139,12 +139,12 @@ export default function HomePage() {
         <Reveal3D>
           <div className="flex items-center gap-4 mb-4">
             <OryginStar size={16} />
-            <span className="text-[9px] tracking-[5px] text-gold-dark">UNE VESTE PAR PAYS</span>
+            <span className="text-[9px] tracking-[5px] text-gold-dark">UN ENSEMBLE PAR PAYS</span>
           </div>
         </Reveal3D>
         <Reveal3D delay={0.1}>
           <h2 className="font-cormorant italic text-4xl md:text-5xl text-white mb-12 max-w-2xl">
-            Chaque pays, une veste. Chaque veste, une histoire.
+            Chaque pays, un ensemble. Chaque ensemble, une histoire.
           </h2>
         </Reveal3D>
 
@@ -173,7 +173,7 @@ export default function HomePage() {
 
                     <div className="absolute top-4 right-4">
                       <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
-                        VESTE
+                        ENSEMBLE
                       </span>
                     </div>
 

@@ -21,7 +21,7 @@ export interface Continent {
 
 export interface Product {
   id: string;
-  type: 'jacket';
+  type: 'ensemble';
   name: string;
   price: number;
   images: string[];
@@ -34,11 +34,11 @@ export interface Product {
 }
 
 export const CONTINENTS: Continent[] = [
-  { id: 'afrique', name: 'Afrique', emoji: '🌍', countryCount: 54, status: 'available' },
-  { id: 'europe', name: 'Europe', emoji: '🏛', countryCount: 44, status: 'available' },
-  { id: 'ameriques', name: 'Amériques', emoji: '🌎', countryCount: 35, status: 'soon', dropLabel: 'DROP 002' },
-  { id: 'asie', name: 'Asie', emoji: '🌏', countryCount: 48, status: 'soon', dropLabel: 'DROP 002' },
-  { id: 'oceanie', name: 'Océanie', emoji: '🌊', countryCount: 14, status: 'soon', dropLabel: 'DROP 003' },
+  { id: 'afrique', name: 'Afrique', emoji: '🌍', countryCount: 4, status: 'available' },
+  { id: 'asie', name: 'Asie', emoji: '🌏', countryCount: 1, status: 'soon', dropLabel: 'DROP 002' },
+  { id: 'ameriques', name: 'Amériques', emoji: '🌎', countryCount: 2, status: 'available' },
+  { id: 'europe', name: 'Europe', emoji: '🏛', countryCount: 1, status: 'soon', dropLabel: 'DROP 002' },
+  { id: 'oceanie', name: 'Océanie', emoji: '🌊', countryCount: 0, status: 'soon', dropLabel: 'DROP 003' },
 ];
 
 export const COUNTRIES: Country[] = [
@@ -49,17 +49,18 @@ export const COUNTRIES: Country[] = [
   },
   {
     code: 'FR', name: 'France', flag: '🇫🇷', subtitle: 'Paris, Haussmann, Élégance',
-    continent: 'europe', status: 'available',
+    continent: 'europe', status: 'soon',
     heroImage: 'https://images.pexels.com/photos/17501700/pexels-photo-17501700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
   { code: 'SN', name: 'Sénégal', flag: '🇸🇳', subtitle: 'Dakar, Wax, Couleurs vives', continent: 'afrique', status: 'soon' },
-  { code: 'NG', name: 'Nigéria', flag: '🇳🇬', subtitle: 'Lagos, afrobeat, ankara', continent: 'afrique', status: 'soon' },
+  { code: 'NG', name: 'Nigeria', flag: '🇳🇬', subtitle: 'Lagos, afrobeat, Ankara', continent: 'afrique', status: 'soon' },
   { code: 'EG', name: 'Égypte', flag: '🇪🇬', subtitle: 'Nil, hiéroglyphes, désert', continent: 'afrique', status: 'soon' },
   { code: 'JP', name: 'Japon', flag: '🇯🇵', subtitle: 'Indigo, Sashiko, Tokyo', continent: 'asie', status: 'soon' },
-  { code: 'US', name: 'États-Unis', flag: '🇺🇸', subtitle: 'Denim, NYC, Workwear', continent: 'ameriques', status: 'soon' },
-  { code: 'BR', name: 'Brésil', flag: '🇧🇷', subtitle: 'Rio, capoeira, carnaval', continent: 'ameriques', status: 'soon' },
-  { code: 'IT', name: 'Italie', flag: '🇮🇹', subtitle: 'Milan, savoir-faire, marbre', continent: 'europe', status: 'soon' },
-  { code: 'GB', name: 'Royaume-Uni', flag: '🇬🇧', subtitle: 'Londres, punk, tartan', continent: 'europe', status: 'soon' },
+  {
+    code: 'US', name: 'États-Unis', flag: '🇺🇸', subtitle: 'Denim, NYC, Workwear', continent: 'ameriques', status: 'available',
+    heroImage: 'https://images.pexels.com/photos/5920069/pexels-photo-5920069.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+  { code: 'AR', name: 'Argentine', flag: '🇦🇷', subtitle: 'Buenos Aires, tango, cuir', continent: 'ameriques', status: 'soon' },
   { code: 'AU', name: 'Australie', flag: '🇦🇺', subtitle: 'Sydney, surf, outback', continent: 'oceanie', status: 'soon' },
 ];
 
@@ -72,29 +73,44 @@ export const PRODUCTS_BY_COUNTRY: Record<string, Product[]> = {
   MA: [
     {
       id: 'ma-desert-gold',
-      type: 'jacket',
+      type: 'ensemble',
       name: 'Desert Gold',
       price: 120,
       images: [MOROCCO_JACKET_IMG_1, MOROCCO_JACKET_IMG_2],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       stock: 42,
       availability: 'available',
-      description: 'Veste oversize en coton ciré, teintée aux pigments naturels du Sahara. Motifs zellige brodés à la main sur le dos, étoile Orygin dorée sur la poitrine. Coupe unisexe, doublure intérieure en soie.',
+      description: 'Ensemble oversize en coton ciré, teinté aux pigments naturels du Sahara. Motifs zellige brodés à la main sur le dos, étoile Orygin dorée sur la poitrine. Coupe unisexe, doublure intérieure en soie.',
       story: 'Née dans les dunes de Merzouga, la Desert Gold capture la lumière dorée du Sahara au coucher du soleil. Chaque pièce est numérotée et brodée par les artisans de Fès.',
       fabric: 'Coton ciré 380g · Doublure soie · Broderies main',
+    },
+  ],
+  US: [
+    {
+      id: 'us-broadway-night',
+      type: 'ensemble',
+      name: 'Broadway Night',
+      price: 120,
+      images: ['https://images.pexels.com/photos/5920069/pexels-photo-5920069.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      stock: 24,
+      availability: 'available',
+      description: 'Ensemble unisexe en denim noir, inspiré par les lumières de New York et la culture workwear. Détails dorés et coupe structurée pour traverser la ville avec caractère.',
+      story: 'La Broadway Night capture le mouvement permanent de New York, entre néons, asphalte et énergie créative. Une pièce pensée pour celles et ceux qui avancent sans détour.',
+      fabric: 'Denim 420g · Doublure coton · Détails laiton',
     },
   ],
   FR: [
     {
       id: 'fr-parisian-night',
-      type: 'jacket',
+      type: 'ensemble',
       name: 'Parisian Night',
       price: 120,
       images: [FRANCE_JACKET_IMG_1, FRANCE_JACKET_IMG_2],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       stock: 38,
       availability: 'available',
-      description: "Veste tailleur en laine mélangée, coupe cintrée inspirée de l'architecture haussmannienne. Boutons en laiton patiné, étoile Orygin discrète sur la patte de poche. Doublure satin noir.",
+      description: "Ensemble tailleur en laine mélangée, coupe cintrée inspirée de l'architecture haussmannienne. Boutons en laiton patiné, étoile Orygin discrète sur la patte de poche. Doublure satin noir.",
       story: "Façonnée dans les ateliers parisiens, la Parisian Night incarne l'élégance discrète des rues de Paris au crépuscule. Une pièce intemporelle, pensée pour traverser les saisons.",
       fabric: 'Laine mélangée 320g · Doublure satin · Boutons laiton',
     },

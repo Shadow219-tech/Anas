@@ -109,7 +109,7 @@ export default function ProductPage() {
 
               <div className="absolute top-4 left-4">
                 <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
-                  VESTE
+                  ENSEMBLE
                 </span>
               </div>
             </div>

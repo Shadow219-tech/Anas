@@ -27,12 +27,12 @@ export default function CountryPage() {
 
   if (country.status === 'soon') {
     return (
-      <div className="min-h-screen bg-black-1 pt-16 flex flex-col items-center justify-center text-center px-8 page3d-in">
+      <div className="min-h-screen bg-black-1 pt-16 flex flex-col items-center justify-center text-center px-8 page3d-in relative overflow-hidden" style={country.heroImage ? { backgroundImage: `linear-gradient(rgba(8,8,8,0.78), rgba(8,8,8,0.96)), url(${country.heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
         <Scene3D count={30} className="opacity-50" />
         <div className="animate-float mb-8 text-8xl relative z-10">{country.flag}</div>
         <h1 className="font-cormorant italic text-7xl text-gold-gradient mb-4 relative z-10">{country.name}</h1>
         <p className="text-[10px] tracking-[4px] text-gray-1 mb-2 relative z-10">{country.subtitle}</p>
-        <p className="text-[9px] tracking-[4px] text-gray-2 mb-12 relative z-10">— BIENTÔT DISPONIBLE</p>
+        <p className="text-[9px] tracking-[4px] text-gray-2 mb-12 relative z-10">— COLLECTION BIENTÔT DISPONIBLE</p>
         <Link
           to={`/${country.continent}`}
           className="text-[9px] tracking-[4px] text-gold-dark border border-gold-dark/40 px-6 py-3 hover:bg-gold-dark/10 transition-colors relative z-10"
@@ -101,7 +101,7 @@ export default function CountryPage() {
         <Reveal3D>
           <div className="flex items-center gap-4 mb-12">
             <OryginStar size={16} />
-            <span className="text-[9px] tracking-[5px] text-gold-dark">LA VESTE — {country.code}</span>
+            <span className="text-[9px] tracking-[5px] text-gold-dark">L'ENSEMBLE — {country.code}</span>
           </div>
         </Reveal3D>
 
@@ -118,7 +118,7 @@ export default function CountryPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black-1/60 via-transparent to-transparent" />
               <div className="absolute top-4 left-4">
                 <span className="text-[8px] tracking-[3px] text-gold-dark bg-black-1/85 px-3 py-1.5 backdrop-blur-sm border border-black-3">
-                  VESTE
+                  ENSEMBLE
                 </span>
               </div>
             </TiltCard3D>
