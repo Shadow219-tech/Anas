@@ -14,7 +14,6 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 import OryginStar from '../components/OryginStar';
 import Scene3D from '../components/Scene3D';
-import Reveal3D from '../components/Reveal3D';
 
 // ── Stripe init ────────────────────────────────────────────────────────────────
 const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
@@ -129,7 +128,6 @@ interface ShippingForm {
 function StripePaymentForm({
   clientSecret,
   orderNumber,
-  orderId,
   onSuccess,
 }: {
   clientSecret: string;

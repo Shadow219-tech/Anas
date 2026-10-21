@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Star, Send, Check, MessageSquare } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import OryginStar from './OryginStar';
 import Reveal3D from './Reveal3D';
 
 interface Review {
@@ -72,7 +71,7 @@ export default function Reviews({ productId, productName }: { productId: string;
     setSubmitting(false);
 
     if (insErr) {
-      setError('Erreur lors de l'envoi. Réessayez.');
+      setError("Erreur lors de l'envoi. Réessayez.");
       return;
     }
 

@@ -1,4 +1,3 @@
-import OryginStar from '../components/OryginStar';
 import Star3D from '../components/Star3D';
 import Scene3D from '../components/Scene3D';
 import Reveal3D from '../components/Reveal3D';

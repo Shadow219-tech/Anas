@@ -4,8 +4,6 @@ import { ChevronLeft, ChevronRight, ShoppingBag, ArrowLeft, Check } from 'lucide
 import { COUNTRIES, findProductById } from '../data/countries';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
-import TiltCard3D from '../components/TiltCard3D';
-import Reveal3D from '../components/Reveal3D';
 import Reviews from '../components/Reviews';
 
 const continentLabel: Record<string, string> = {

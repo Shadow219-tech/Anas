@@ -4,8 +4,6 @@ import { LogOut, Package, User, MapPin, ChevronRight, Edit3, Check } from 'lucid
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import OryginStar from '../components/OryginStar';
-import Scene3D from '../components/Scene3D';
-import Reveal3D from '../components/Reveal3D';
 
 interface Order {
   id: string;

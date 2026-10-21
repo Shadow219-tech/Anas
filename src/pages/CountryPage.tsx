@@ -16,7 +16,7 @@ const continentLabel: Record<string, string> = {
 
 export default function CountryPage() {
   const { code } = useParams<{ code: string }>();
-  const { addItem, openCart } = useCart();
+  const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
 

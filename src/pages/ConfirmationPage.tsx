@@ -4,7 +4,6 @@ import { Package } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 import OryginStar from '../components/OryginStar';
-import Scene3D from '../components/Scene3D';
 import PaymentSuccess from '../components/PaymentSuccess';
 
 interface Order {

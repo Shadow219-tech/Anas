@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Star, Check, X, Truck, CheckCircle, Clock, ExternalLink, LogOut } from 'lucide-react';
+import { Package, Star, Check, X, Truck, CheckCircle, Clock, LogOut } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import OryginStar from '../components/OryginStar';
